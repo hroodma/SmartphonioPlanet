@@ -1,0 +1,30 @@
+using UnityEngine;
+
+public interface IBody
+{
+    Vector3 Position { get; }
+    Vector3 Forward { get; }
+    Vector3 Right { get; }
+    void Apply(Vector3 velocity, Vector3 up);
+}
+
+public interface IUnitView
+{
+    void Render(UnitData data);
+}
+
+public interface IPlayerInput
+{
+    PlayerCommand Read();
+}
+
+public interface IUnitFactory
+{
+    void SpawnWave();
+}
+
+public interface IUnitSink
+{
+    void Despawn(int id);
+    void Respawn(int id);
+}
