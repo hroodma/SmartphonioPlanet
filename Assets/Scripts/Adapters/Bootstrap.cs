@@ -58,18 +58,9 @@ public sealed class Bootstrap : MonoBehaviour
         unitData.Id = 1;
         unitData.MoveSpeed = 5f;
         unitData.Acceleration = 20f;
+        unitData.TurnSpeed = 180f;
         unitData.UpDirection = Vector3.up;
 
         return unitData;
     }
-
-    //private PlanetData TestPlanet()
-    //{
-    //    PlanetData planetData = new PlanetData();
-
-    //    planetData.Center = Vector3.zero;
-    //    planetData.Radius = 5;
-
-    //    return planetData;
-    //}
 }

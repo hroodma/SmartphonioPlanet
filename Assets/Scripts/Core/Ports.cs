@@ -5,7 +5,7 @@ public interface IBody
     Vector3 Position { get; }
     Vector3 Forward { get; }
     Vector3 Right { get; }
-    void Apply(Vector3 velocity, Vector3 up);
+    void Apply(Vector3 velocity, Vector3 up, Vector3 forward);
 }
 
 public interface IUnitView

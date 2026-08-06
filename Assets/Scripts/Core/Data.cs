@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,6 +21,10 @@ public sealed class UnitData
     public float Acceleration;
     public Vector3 MoveDirection;
     public Vector3 UpDirection;
+
+    public float MoveInput;
+    public float TurnInput;
+    public float TurnSpeed = 180f;
 }
 
 public sealed class PlanetData

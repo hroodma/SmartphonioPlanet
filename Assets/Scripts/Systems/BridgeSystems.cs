@@ -48,11 +48,22 @@ public sealed class PlayerCommandSystem : ISystem
 
         if (cmd.MoveAxis.sqrMagnitude >= 0.01f)
         {
-            player.MoveDirection = (player.Forward * cmd.MoveAxis.y + player.Right * cmd.MoveAxis.x);
+            // MoveInput: только W (1) или S (-1) или 0
+            if (Mathf.Abs(cmd.MoveAxis.y) > 0.1f)
+                player.MoveInput = Mathf.Sign(cmd.MoveAxis.y);
+            else
+                player.MoveInput = 0f;
+
+            // TurnInput: только D (1) или A (-1) или 0
+            if (Mathf.Abs(cmd.MoveAxis.x) > 0.1f)
+                player.TurnInput = Mathf.Sign(cmd.MoveAxis.x);
+            else
+                player.TurnInput = 0f;
         }
         else
         {
-            player.MoveDirection = Vector3.zero;
+            player.MoveInput = 0f;
+            player.TurnInput = 0f;
         }
     }
 }
@@ -60,8 +71,6 @@ public sealed class PlayerCommandSystem : ISystem
 public sealed class PlanetGravitySystem : ISystem
 {
     private readonly World world;
-    private const float GravityStrength = 9.8f;
-    private const float MaxFallSpeed = 10f;
 
     public PlanetGravitySystem(World world)
     {
@@ -112,7 +121,7 @@ public sealed class PhysicsWriteSystem : ISystem
             if (!world.Units.TryGetValue(kv.Key, out UnitData u))
                 continue;
 
-            kv.Value.Apply(u.DesiredVelocity, u.UpDirection);
+            kv.Value.Apply(u.DesiredVelocity, u.UpDirection, u.Forward);
         }
     }
 }

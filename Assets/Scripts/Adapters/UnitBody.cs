@@ -12,11 +12,9 @@ public sealed class UnitBody : MonoBehaviour, IBody
     public Vector3 Forward => Rb.transform.forward;
     public Vector3 Right => Rb.transform.right;
 
-    public void Apply(Vector3 velocity, Vector3 up)
+    public void Apply(Vector3 velocity, Vector3 up, Vector3 forward)
     {
-        //Quaternion targetRot = Quaternion.FromToRotation(transform.up, up) * transform.rotation;
-        Rb.rotation = Quaternion.FromToRotation(transform.up, up) * transform.rotation;
-        //Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, targetRot, turnSpeed * Time.fixedDeltaTime));
+        Rb.rotation = Quaternion.LookRotation(forward, up);
 
         Rb.linearVelocity = velocity;
 
