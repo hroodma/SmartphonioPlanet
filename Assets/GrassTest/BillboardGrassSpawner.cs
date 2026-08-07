@@ -5,14 +5,16 @@ using System.Collections.Generic;
 public class BillboardGrassSpawner : MonoBehaviour
 {
     [Header("Настройки")]
-    public float sphereRadius = 5f;
-    public int grassCount = 15000; // Количество травинок
-    public float grassHeight = 0.4f;
-    public float grassWidth = 0.15f;
+    public GameObject _ground;
+    [SerializeField] private float sphereRadius;
+    public int grassCount = 300000; // Количество травинок
+    public float grassHeight = 1.7f;
+    public float grassWidth = 0.7f;
     public Material grassMaterial;
 
     void Start()
     {
+        sphereRadius = _ground.transform.localScale.x / 2;
         GenerateMesh();
     }
 

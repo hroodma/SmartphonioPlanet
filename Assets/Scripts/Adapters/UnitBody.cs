@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public sealed class UnitBody : MonoBehaviour, IBody
 {
-    [SerializeField] private float turnSpeed = 10f;
+    //[SerializeField] private float turnSpeed = 10f;
 
     private Rigidbody rb;
     private Rigidbody Rb => rb != null ? rb : (rb = GetComponent<Rigidbody>());

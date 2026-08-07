@@ -6,27 +6,37 @@ public sealed class Bootstrap : MonoBehaviour
 {
     [Header("Wiring")]
     [SerializeField] private GameLoop loop;
+    [SerializeField] private UnitFactory factory;
     [SerializeField] private PlayerInputAdapter playerInput;
 
-    [Header("Player")]
+    [Header("Placed units")]
     [SerializeField] private UnitBody playerBody;
+
+    [Header("Stats (ScriptableObject)")]
+    [SerializeField] private UnitStats playerStats;
 
     private void Awake()
     {
         World world = new World();
         Bindings bindings = new Bindings();
 
+        factory.Init(world, bindings);
         bindings.PlayerInput = playerInput;
+
+        // Усыновляем то, что уже расставлено в сцене.
+        if (playerBody != null)
+            bindings.PlayerId = factory.RegisterBody(playerBody, playerStats);
+
+        factory.SpawnWave();
 
         // TECT TECT TECT TECT TECT TECT TECT TECT TECT TECT
         world.Planet.Center = Vector3.zero;
-        world.Planet.Radius = 5f;
         world.Planet.GravityStrength = 200f;
 
-        UnitData testUnitData = TestUnitData();
-        bindings.Bodies[testUnitData.Id] = playerBody;
-        bindings.PlayerId = testUnitData.Id;
-        world.Units[testUnitData.Id] = testUnitData;
+        //UnitData testUnitData = TestUnitData();
+        //bindings.Bodies[testUnitData.Id] = playerBody;
+        //bindings.PlayerId = testUnitData.Id;
+        //world.Units[testUnitData.Id] = testUnitData;
 
         PhysicsWriteSystem write = new PhysicsWriteSystem(world, bindings);
 

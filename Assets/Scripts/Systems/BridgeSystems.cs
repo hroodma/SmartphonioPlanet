@@ -90,14 +90,6 @@ public sealed class PlanetGravitySystem : ISystem
             u.MoveDirection = Vector3.ProjectOnPlane(u.MoveDirection, u.UpDirection);
 
             u.VerticalVelocity = -u.UpDirection * world.Planet.GravityStrength * dt;
-
-            float distanceFromCenter = Vector3.Distance(u.Position, world.Planet.Center);
-            if (distanceFromCenter <= world.Planet.Radius + 0.1f)
-            {
-                float fallSpeed = Vector3.Dot(u.VerticalVelocity, -u.UpDirection);
-                if (fallSpeed > 0)
-                    u.VerticalVelocity += u.UpDirection * fallSpeed;
-            }
         }
     }
 }

@@ -24,13 +24,12 @@ public sealed class UnitData
 
     public float MoveInput;
     public float TurnInput;
-    public float TurnSpeed = 180f;
+    public float TurnSpeed = 60f;
 }
 
 public sealed class PlanetData
 {
     public Vector3 Center;
-    public float Radius;
     public float GravityStrength;
 }
 
