@@ -58,7 +58,7 @@ public sealed class Bootstrap : MonoBehaviour
         unitData.Id = 1;
         unitData.MoveSpeed = 5f;
         unitData.Acceleration = 20f;
-        unitData.TurnSpeed = 180f;
+        unitData.TurnSpeed = 60f;
         unitData.UpDirection = Vector3.up;
 
         return unitData;
