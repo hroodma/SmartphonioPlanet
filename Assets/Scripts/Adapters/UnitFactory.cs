@@ -1,11 +1,13 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 
-public class UnitFactory : MonoBehaviour, IUnitFactory
+public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 {
+    [Header("Wave count")]
+    [SerializeField] private int waveCount;
+
     [Header("Animal prefabs")]
-    [SerializeField] private GameObject animalPrefab;
+    [SerializeField] private GameObject rabbitPrefab;
 
     [Header("Animal spawn points")]
     [SerializeField] private Transform animalSpawnpoint;
@@ -39,17 +41,19 @@ public class UnitFactory : MonoBehaviour, IUnitFactory
 
     public void SpawnWave()
     {
-        SpawnAnimal(animalPrefab, animalSpawnpoint);
+        for (int i = 0; i < waveCount; i++)
+        {
+            SpawnAnimal(rabbitPrefab, RandomPointOnSphere());
+        }
     }
 
-    private void SpawnAnimal(GameObject prefab, Transform point)
+    private void SpawnAnimal(GameObject prefab, Vector3 point)
     {
         if (prefab == null || point == null)
             return;
 
-        GameObject go = Instantiate(prefab, point.position, point.rotation);
+        GameObject go = Instantiate(prefab, point, Quaternion.identity);
 
-        // Префабы животных не трогаем - адаптеры навешиваем здесь, на границе.
         UnitBody body = go.GetComponent<UnitBody>();
         if (body == null)
             body = go.AddComponent<UnitBody>();
@@ -58,6 +62,69 @@ public class UnitFactory : MonoBehaviour, IUnitFactory
             go.AddComponent<UnitView>();
 
         RegisterBody(body, animalStats, UnitKind.Animal);
+    }
+
+    public void Respawn(int id)
+    {
+        if (!world.Units.TryGetValue(id, out UnitData u))
+            return;
+
+        u.Alive = true;
+        u.DesiredVelocity = Vector3.zero;
+
+        if (bindings.Bodies.TryGetValue(id, out IBody body) && body is Component c)
+        {
+            c.transform.position = RandomPointOnSphere();
+            u.Position = RandomPointOnSphere();
+        }
+    }
+
+    private Vector3 RandomPointOnSphere()
+    {
+        if (!world.Units.TryGetValue(bindings.PlayerId, out UnitData player))
+            return default;
+
+        Vector3 playerPos = player.Position;
+        float radius = world.Planet.Radius;
+        Vector3 center = world.Planet.Center;
+
+        const float requiredDistanceToPlayer = 20f;
+        const float requiredDistanceToOtherAnimal = 2f;
+
+        Vector3 point;
+        int attempts = 0;
+        const int maxAttempts = 100;
+        Collider[] otherInteractable = new Collider[1];
+
+        do
+        {
+            Vector3 direction = Random.onUnitSphere;
+
+            point = center + direction.normalized * radius;
+
+            int count = Physics.OverlapSphereNonAlloc(
+                point,
+                requiredDistanceToOtherAnimal,
+                otherInteractable,
+                LayerMask.GetMask("Interactable")
+            );
+
+            attempts++;
+
+            if (attempts >= maxAttempts)
+            {
+                break;
+            }
+
+            if (Vector3.Distance(point, playerPos) > requiredDistanceToPlayer && count == 0)
+                break;
+        }
+        while (true);
+
+        if (attempts == maxAttempts)
+            Debug.Log($"Использовано максимальное количество попыток, поэтому точка поставилась не совсем там где надо: {point}");
+
+        return point;
     }
 
     // Метка id на GameObject юнита

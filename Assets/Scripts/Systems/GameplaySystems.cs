@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 public sealed class MovementSystem : ISystem
@@ -54,6 +55,43 @@ public sealed class MovementSystem : ISystem
             );
 
             u.DesiredVelocity = u.HorizontalVelocity + u.VerticalVelocity;
+        }
+    }
+}
+
+public sealed class CaughtSystem : ISystem
+{
+    private readonly World world;
+    private readonly IUnitSink sink;
+    private readonly List<int> caught = new List<int>();
+
+    public CaughtSystem(World world, IUnitSink sink)
+    {
+        this.world = world;
+        this.sink = sink;
+    }
+
+    public void Run(float dt)
+    {
+        caught.Clear();
+        foreach (UnitData u in world.Units.Values)
+            if (!u.Alive && !caught.Contains(u.Id))
+                caught.Add(u.Id);
+
+        foreach (int id in caught)
+        {
+            if (!world.Units.TryGetValue(id, out UnitData u))
+                continue;
+
+            u.Alive = false;
+            u.DesiredVelocity = Vector3.zero;
+
+            switch (u.Kind)
+            {
+                case UnitKind.Animal:
+                    sink.Respawn(id);
+                    break;
+            }
         }
     }
 }

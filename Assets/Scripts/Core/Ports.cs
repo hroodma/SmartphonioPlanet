@@ -25,6 +25,5 @@ public interface IUnitFactory
 
 public interface IUnitSink
 {
-    void Despawn(int id);
     void Respawn(int id);
 }

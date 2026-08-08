@@ -23,15 +23,16 @@ public sealed class Bootstrap : MonoBehaviour
         factory.Init(world, bindings);
         bindings.PlayerInput = playerInput;
 
+        // TECT TECT TECT TECT TECT TECT TECT TECT TECT TECT
+        world.Planet.Center = Vector3.zero;
+        world.Planet.GravityStrength = 200f;
+        world.Planet.Radius = 25;
+
         // Усыновляем то, что уже расставлено в сцене.
         if (playerBody != null)
             bindings.PlayerId = factory.RegisterBody(playerBody, playerStats, UnitKind.Player);
 
         factory.SpawnWave();
-
-        // TECT TECT TECT TECT TECT TECT TECT TECT TECT TECT
-        world.Planet.Center = Vector3.zero;
-        world.Planet.GravityStrength = 200f;
 
         PhysicsWriteSystem write = new PhysicsWriteSystem(world, bindings);
 
@@ -41,6 +42,7 @@ public sealed class Bootstrap : MonoBehaviour
             new PlanetGravitySystem(world),
             new InteractionSystem(world),
             new MovementSystem(world),
+            new CaughtSystem(world, factory),
             write
         };
 

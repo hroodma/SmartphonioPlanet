@@ -37,6 +37,7 @@ public sealed class PlanetData
 {
     public Vector3 Center;
     public float GravityStrength;
+    public float Radius;
 }
 
 public sealed class World

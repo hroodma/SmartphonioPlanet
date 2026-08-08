@@ -141,6 +141,7 @@ public sealed class InteractionSystem : ISystem
         {
             self.CollectedAnimals++;
             other.Alive = false;
+            Debug.Log($"пойманных зверей: {self.CollectedAnimals}");
         }
     }
 }
