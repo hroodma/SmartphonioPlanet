@@ -15,4 +15,4 @@ MonoBehaviour:
   moveSpeed: 5
   acceleration: 20
   turnSpeed: 60
-  interactionRadius: 2
+  interactionRadius: 0.7

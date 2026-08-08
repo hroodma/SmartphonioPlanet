@@ -163,7 +163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d46999764acfc8744b60739117f80fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animalPrefab: {fileID: 8123607444069240182, guid: 3a72d1d93dbb3e949a3662ec7558a613, type: 3}
+  waveCount: 100
+  rabbitPrefab: {fileID: 8123607444069240182, guid: 3a72d1d93dbb3e949a3662ec7558a613, type: 3}
   animalSpawnpoint: {fileID: 1215958435}
   animalStats: {fileID: 11400000, guid: 1ddc6122910006b429dd56dab1e17174, type: 2}
 --- !u!1 &250466011
@@ -832,7 +833,7 @@ Transform:
   m_GameObject: {fileID: 1215958434}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.67, y: 26.32, z: 10.68}
+  m_LocalPosition: {x: 1.41, y: 21.9, z: 5.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1371,6 +1372,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 901162234}
     m_Modifications:
+    - target: {fileID: 1951202207822617341, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
+      propertyPath: m_Name
+      value: Planet
+      objectReference: {fileID: 0}
     - target: {fileID: 2803877323510615437, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -1417,7 +1422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8930386073412926805, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
       propertyPath: m_Name
-      value: Planet
+      value: PlanetWithGrass
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
