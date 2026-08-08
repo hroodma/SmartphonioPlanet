@@ -32,12 +32,27 @@ public sealed class MovementSystem : ISystem
 
             u.Right = Vector3.Cross(u.UpDirection, u.Forward).normalized;
 
-            u.HorizontalVelocity = u.Forward * u.MoveInput * u.MoveSpeed;
-
+            Vector3 targetVelocity;
             if (Mathf.Abs(u.MoveInput) < 0.01f)
-                u.HorizontalVelocity = Vector3.zero;
+            {
+                targetVelocity = Vector3.zero;  // нет ввода — хотим остановиться
+            }
+            else
+            {
+                targetVelocity = u.Forward * u.MoveInput * u.MoveSpeed;
+                targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
+            }
 
-            u.HorizontalVelocity = Vector3.ProjectOnPlane(u.HorizontalVelocity, u.UpDirection);
+            float accel = Mathf.Abs(u.MoveInput) < 0.01f
+                ? u.Acceleration * 2f    // тормозим в 2 раза быстрее
+                : u.Acceleration;        // разгоняемся с обычной скоростью
+
+            u.HorizontalVelocity = Vector3.MoveTowards(
+                u.HorizontalVelocity,   // откуда (текущая скорость)
+                targetVelocity,          // куда (желаемая скорость)
+                accel * dt               // максимальный шаг за кадр
+            );
+
             u.DesiredVelocity = u.HorizontalVelocity + u.VerticalVelocity;
         }
     }

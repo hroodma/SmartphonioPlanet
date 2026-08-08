@@ -31,9 +31,9 @@ public class UnitFactory : MonoBehaviour
         Tag(body.gameObject, data.Id);
         bindings.Bodies[data.Id] = body;
 
-        //UnitView view = body.GetComponent<UnitView>();
-        //if (view != null)
-        //    bindings.Views[data.Id] = view;
+        UnitView view = body.GetComponent<UnitView>();
+        if (view != null)
+            bindings.Views[data.Id] = view;
         return data.Id;
     }
 
@@ -49,10 +49,13 @@ public class UnitFactory : MonoBehaviour
 
         GameObject go = Instantiate(prefab, point.position, point.rotation);
 
-        // Префабы крипов не трогаем - адаптеры навешиваем здесь, на границе.
+        // Префабы животных не трогаем - адаптеры навешиваем здесь, на границе.
         UnitBody body = go.GetComponent<UnitBody>();
         if (body == null)
             body = go.AddComponent<UnitBody>();
+
+        if (go.GetComponent<UnitView>() == null)
+            go.AddComponent<UnitView>();
 
         RegisterBody(body, animalStats);
     }

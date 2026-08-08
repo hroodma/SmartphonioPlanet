@@ -18,6 +18,6 @@ public class PlayerSync : MonoBehaviour
         Shader.SetGlobalVector(PlayerPosID, pos);
 
         // Раскомментируйте эту строку, чтобы видеть позицию в консоли
-        Debug.Log($"Player Pos: {pos}");
+        //Debug.Log($"Player Pos: {pos}");
     }
 }

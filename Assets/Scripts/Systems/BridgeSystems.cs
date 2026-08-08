@@ -94,6 +94,30 @@ public sealed class PlanetGravitySystem : ISystem
     }
 }
 
+// ВЫХОД: погнать данные в Animator каждого юнита.
+public sealed class ViewSyncSystem : ISystem
+{
+    private readonly World world;
+    private readonly Bindings bindings;
+
+    public ViewSyncSystem(World world, Bindings bindings)
+    {
+        this.world = world;
+        this.bindings = bindings;
+    }
+
+    public void Run(float dt)
+    {
+        foreach (KeyValuePair<int, IUnitView> kv in bindings.Views)
+        {
+            if (world.Units.TryGetValue(kv.Key, out UnitData u))
+            {
+                kv.Value.Render(u);
+            }
+        }
+    }
+}
+
 // ВЫХОД: отдать желаемую скорость и поворот телам.
 public sealed class PhysicsWriteSystem : ISystem
 {
