@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum UnitKind { Player, Animal }
+
 public sealed class UnitData
 {
     public int Id;
+    public UnitKind Kind;
 
     public bool Alive = true;
 
@@ -25,6 +28,9 @@ public sealed class UnitData
     public float MoveInput;
     public float TurnInput;
     public float TurnSpeed = 60f;
+    public float InteractionRadius;
+
+    public int CollectedAnimals;
 }
 
 public sealed class PlanetData

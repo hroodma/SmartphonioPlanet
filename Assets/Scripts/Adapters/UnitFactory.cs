@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-public class UnitFactory : MonoBehaviour
+public class UnitFactory : MonoBehaviour, IUnitFactory
 {
     [Header("Animal prefabs")]
     [SerializeField] private GameObject animalPrefab;
@@ -22,10 +22,10 @@ public class UnitFactory : MonoBehaviour
         this.bindings = bindings;
     }
 
-    // Усыновляет объект с UnitBody (герой, крип) как юнит данных + тело + вью.
-    public int RegisterBody(UnitBody body, UnitStats stats)
+    // Усыновляет объект с UnitBody (игрок, зверь) как юнит данных + тело + вью.
+    public int RegisterBody(UnitBody body, UnitStats stats, UnitKind kind)
     {
-        UnitData data = MakeData(stats, body.Position);
+        UnitData data = MakeData(stats, kind, body.Position);
         world.Add(data);
 
         Tag(body.gameObject, data.Id);
@@ -57,10 +57,10 @@ public class UnitFactory : MonoBehaviour
         if (go.GetComponent<UnitView>() == null)
             go.AddComponent<UnitView>();
 
-        RegisterBody(body, animalStats);
+        RegisterBody(body, animalStats, UnitKind.Animal);
     }
 
-    // Метка id на GameObject юнита: по ней клик игрока находит цель (в т.ч. трон без UnitBody).
+    // Метка id на GameObject юнита
     private static void Tag(GameObject go, int id)
     {
         UnitRef unit = go.GetComponent<UnitRef>();
@@ -69,14 +69,15 @@ public class UnitFactory : MonoBehaviour
         unit.Id = id;
     }
 
-    private static UnitData MakeData(UnitStats s/*, UnitKind kind*/, Vector3 pos)
+    private static UnitData MakeData(UnitStats s, UnitKind kind, Vector3 pos)
     {
         return new UnitData
         {
-            //Kind = kind,
+            Kind = kind,
             Position = pos,
             MoveSpeed = s.moveSpeed,
             Acceleration = s.acceleration,
+            InteractionRadius = s.interactionRadius,
         };
     }
 }

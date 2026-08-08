@@ -35,7 +35,7 @@ public sealed class MovementSystem : ISystem
             Vector3 targetVelocity;
             if (Mathf.Abs(u.MoveInput) < 0.01f)
             {
-                targetVelocity = Vector3.zero;  // нет ввода — хотим остановиться
+                targetVelocity = Vector3.zero;
             }
             else
             {
@@ -44,13 +44,13 @@ public sealed class MovementSystem : ISystem
             }
 
             float accel = Mathf.Abs(u.MoveInput) < 0.01f
-                ? u.Acceleration * 2f    // тормозим в 2 раза быстрее
-                : u.Acceleration;        // разгоняемся с обычной скоростью
+                ? u.Acceleration * 2f
+                : u.Acceleration;
 
             u.HorizontalVelocity = Vector3.MoveTowards(
-                u.HorizontalVelocity,   // откуда (текущая скорость)
-                targetVelocity,          // куда (желаемая скорость)
-                accel * dt               // максимальный шаг за кадр
+                u.HorizontalVelocity,
+                targetVelocity,
+                accel * dt
             );
 
             u.DesiredVelocity = u.HorizontalVelocity + u.VerticalVelocity;

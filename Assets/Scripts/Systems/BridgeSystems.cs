@@ -94,6 +94,57 @@ public sealed class PlanetGravitySystem : ISystem
     }
 }
 
+public sealed class InteractionSystem : ISystem
+{
+    private readonly World world;
+
+    private readonly Collider[] _buffer = new Collider[32];
+
+    public InteractionSystem(World world)
+    {
+        this.world = world;
+    }
+
+    public void Run(float dt)
+    {
+        foreach (UnitData u in world.Units.Values)
+        {
+            if (!u.Alive) continue;
+
+            if (u.Kind == UnitKind.Animal) continue;
+
+            int count = Physics.OverlapSphereNonAlloc(
+                u.Position,
+                u.InteractionRadius,
+                _buffer,
+                LayerMask.GetMask("Interactable")
+            );
+
+            for (int i = 0; i < count; i++)
+            {
+                if (_buffer[i].TryGetComponent<UnitRef>(out var otherRef))
+                {
+                    if (otherRef.Id == u.Id) continue;
+
+                    if (world.Units.TryGetValue(otherRef.Id, out UnitData other))
+                    {
+                        HandleInteraction(u, other);
+                    }
+                }
+            }
+        }
+    }
+
+    private void HandleInteraction(UnitData self, UnitData other)
+    {
+        if (other.Kind == UnitKind.Animal && other.Alive)
+        {
+            self.CollectedAnimals++;
+            other.Alive = false;
+        }
+    }
+}
+
 // ВЫХОД: погнать данные в Animator каждого юнита.
 public sealed class ViewSyncSystem : ISystem
 {

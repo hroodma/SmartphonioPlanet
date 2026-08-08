@@ -25,7 +25,7 @@ public sealed class Bootstrap : MonoBehaviour
 
         // Усыновляем то, что уже расставлено в сцене.
         if (playerBody != null)
-            bindings.PlayerId = factory.RegisterBody(playerBody, playerStats);
+            bindings.PlayerId = factory.RegisterBody(playerBody, playerStats, UnitKind.Player);
 
         factory.SpawnWave();
 
@@ -33,17 +33,13 @@ public sealed class Bootstrap : MonoBehaviour
         world.Planet.Center = Vector3.zero;
         world.Planet.GravityStrength = 200f;
 
-        //UnitData testUnitData = TestUnitData();
-        //bindings.Bodies[testUnitData.Id] = playerBody;
-        //bindings.PlayerId = testUnitData.Id;
-        //world.Units[testUnitData.Id] = testUnitData;
-
         PhysicsWriteSystem write = new PhysicsWriteSystem(world, bindings);
 
         ISystem[] fixedSystems =
         {
             new PhysicsReadSystem(world, bindings),
             new PlanetGravitySystem(world),
+            new InteractionSystem(world),
             new MovementSystem(world),
             write
         };

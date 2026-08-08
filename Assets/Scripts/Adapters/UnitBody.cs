@@ -3,8 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public sealed class UnitBody : MonoBehaviour, IBody
 {
-    //[SerializeField] private float turnSpeed = 10f;
-
     private Rigidbody rb;
     private Rigidbody Rb => rb != null ? rb : (rb = GetComponent<Rigidbody>());
 
@@ -24,6 +22,7 @@ public sealed class UnitBody : MonoBehaviour, IBody
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        //rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.useGravity = false;
     }
 }
