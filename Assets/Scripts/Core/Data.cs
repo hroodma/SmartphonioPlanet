@@ -34,7 +34,7 @@ public sealed class UnitData
     public float UnitBonusTime;
     public float SumBonusTime;
 
-    public int CollectedAnimals;
+    public int CaughtAnimals;
 }
 
 public sealed class PlanetData
@@ -76,6 +76,7 @@ public sealed class Bindings
     public readonly Dictionary<int, IBody> Bodies = new Dictionary<int, IBody>();
     public readonly Dictionary<int, IUnitView> Views = new Dictionary<int, IUnitView>();
     public readonly Dictionary<int, IUnitSound> Sounds = new Dictionary<int, IUnitSound>();
+    public IPlayerUI PlayerUI;
     public IPlayerInput PlayerInput;
     public int PlayerId;
 }

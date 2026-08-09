@@ -23,6 +23,11 @@ public interface IPlayerInput
     PlayerCommand Read();
 }
 
+public interface IPlayerUI
+{
+    void UpdateUI(UnitData playerData, float timer);
+}
+
 public interface IUnitFactory
 {
     void SpawnWave();

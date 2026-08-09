@@ -139,13 +139,33 @@ public sealed class InteractionSystem : ISystem
     {
         if (other.Kind == UnitKind.Animal && other.Alive)
         {
-            self.CollectedAnimals++;
+            self.CaughtAnimals++;
             self.SumBonusTime += other.UnitBonusTime;
             other.Alive = false;
-            Debug.Log($"пойманных зверей: {self.CollectedAnimals}");
+            Debug.Log($"пойманных зверей: {self.CaughtAnimals}");
             Debug.Log($"Теперь бонусного времени: {self.SumBonusTime}");
             
         }
+    }
+}
+
+public sealed class PlayerUISyncSystem : ISystem
+{
+    private readonly World world;
+    private readonly Bindings bindings;
+
+    public PlayerUISyncSystem(World world, Bindings bindings)
+    {
+        this.world = world;
+        this.bindings = bindings;
+    }
+
+    public void Run(float dt)
+    {
+        if (!world.Units.TryGetValue(bindings.PlayerId, out UnitData playerData))
+            return;
+
+        bindings.PlayerUI.UpdateUI(playerData, world.Match.Timer);
     }
 }
 
