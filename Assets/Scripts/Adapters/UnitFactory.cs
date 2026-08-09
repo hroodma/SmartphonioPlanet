@@ -150,6 +150,7 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
             MoveSpeed = s.moveSpeed,
             Acceleration = s.acceleration,
             InteractionRadius = s.interactionRadius,
+            UnitBonusTime = s.unitBunusTime
         };
     }
 }

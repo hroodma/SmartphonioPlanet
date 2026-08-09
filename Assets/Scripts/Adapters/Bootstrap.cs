@@ -20,7 +20,7 @@ public sealed class Bootstrap : MonoBehaviour
     {
         World world = new World();
         Bindings bindings = new Bindings();
-        world.Match.timer = startTimer;
+        world.Match.Timer = startTimer;
 
         factory.Init(world, bindings);
         bindings.PlayerInput = playerInput;

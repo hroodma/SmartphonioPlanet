@@ -7,4 +7,5 @@ public class UnitStats : ScriptableObject
     public float acceleration = 20f;
     public float turnSpeed = 60f;
     public float interactionRadius = 0.7f;
+    public float unitBunusTime = 3f;
 }

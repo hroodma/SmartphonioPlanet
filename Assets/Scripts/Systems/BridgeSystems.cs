@@ -140,8 +140,11 @@ public sealed class InteractionSystem : ISystem
         if (other.Kind == UnitKind.Animal && other.Alive)
         {
             self.CollectedAnimals++;
+            self.SumBonusTime += other.UnitBonusTime;
             other.Alive = false;
             Debug.Log($"пойманных зверей: {self.CollectedAnimals}");
+            Debug.Log($"Теперь бонусного времени: {self.SumBonusTime}");
+            
         }
     }
 }

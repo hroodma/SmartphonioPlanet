@@ -107,13 +107,22 @@ public sealed class EndGameTimerSystem : ISystem
 
     public void Run(float dt)
     {
-        if (world.Match.timer <= 0)
+        if (world.Match.Timer <= 0)
         {
             world.Match.Over = true;
             return;
         }
 
-        world.Match.timer -= dt;
-        Debug.Log($"Осталось: {world.Match.timer}");
+        foreach (UnitData u in world.Units.Values)
+        {            
+            if (u.Kind == UnitKind.Player)
+            {
+                world.Match.Timer += u.SumBonusTime;
+                u.SumBonusTime = 0;
+            }
+        }
+
+        world.Match.Timer -= dt;
+        Debug.Log($"Осталось: {world.Match.Timer}");
     }
 }

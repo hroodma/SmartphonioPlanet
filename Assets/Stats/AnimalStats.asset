@@ -16,3 +16,4 @@ MonoBehaviour:
   acceleration: 20
   turnSpeed: 60
   interactionRadius: 0.7
+  unitBunusTime: 3

@@ -31,6 +31,9 @@ public sealed class UnitData
     public float TurnSpeed = 60f;
     public float InteractionRadius;
 
+    public float UnitBonusTime;
+    public float SumBonusTime;
+
     public int CollectedAnimals;
 }
 
@@ -44,7 +47,7 @@ public sealed class PlanetData
 public sealed class MatchState
 {
     public bool Over;
-    public float timer;
+    public float Timer;
 }
 
 public sealed class World
