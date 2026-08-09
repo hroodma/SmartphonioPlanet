@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -40,10 +41,17 @@ public sealed class PlanetData
     public float Radius;
 }
 
+public sealed class MatchState
+{
+    public bool Over;
+    public float timer;
+}
+
 public sealed class World
 {
     public readonly Dictionary<int, UnitData> Units = new Dictionary<int, UnitData>();
     public readonly PlanetData Planet = new PlanetData();
+    public readonly MatchState Match = new MatchState();
 
     private int nextId = 1;
 

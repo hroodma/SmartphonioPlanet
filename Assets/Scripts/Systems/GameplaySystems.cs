@@ -95,3 +95,25 @@ public sealed class CaughtSystem : ISystem
         }
     }
 }
+
+public sealed class EndGameTimerSystem : ISystem
+{
+    private readonly World world;
+
+    public EndGameTimerSystem(World world)
+    {
+        this.world = world;
+    }
+
+    public void Run(float dt)
+    {
+        if (world.Match.timer <= 0)
+        {
+            world.Match.Over = true;
+            return;
+        }
+
+        world.Match.timer -= dt;
+        Debug.Log($"Осталось: {world.Match.timer}");
+    }
+}

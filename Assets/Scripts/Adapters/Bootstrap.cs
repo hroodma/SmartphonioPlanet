@@ -8,6 +8,7 @@ public sealed class Bootstrap : MonoBehaviour
     [SerializeField] private GameLoop loop;
     [SerializeField] private UnitFactory factory;
     [SerializeField] private PlayerInputAdapter playerInput;
+    [SerializeField] private float startTimer;
 
     [Header("Placed units")]
     [SerializeField] private UnitBody playerBody;
@@ -19,6 +20,7 @@ public sealed class Bootstrap : MonoBehaviour
     {
         World world = new World();
         Bindings bindings = new Bindings();
+        world.Match.timer = startTimer;
 
         factory.Init(world, bindings);
         bindings.PlayerInput = playerInput;
@@ -49,6 +51,7 @@ public sealed class Bootstrap : MonoBehaviour
         ISystem[] frameSystems =
         {
             new PlayerCommandSystem(world, bindings),
+            new EndGameTimerSystem(world),
             new ViewSyncSystem(world, bindings),
             new SoundSyncSystem(world, bindings)
         };

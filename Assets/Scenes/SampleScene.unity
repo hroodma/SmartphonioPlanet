@@ -199,6 +199,7 @@ MonoBehaviour:
   loop: {fileID: 845863012}
   factory: {fileID: 241701006}
   playerInput: {fileID: 1692015001}
+  startTimer: 10
   playerBody: {fileID: 1692014995}
   playerStats: {fileID: 11400000, guid: 31f288279ec4a6a4b8b8ef2f83a7c94c, type: 2}
 --- !u!4 &283062059
@@ -885,7 +886,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 38464549def4e7041a7395faa5048c76, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 38464549def4e7041a7395faa5048c76, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.16
