@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2803877323510615437}
   - component: {fileID: 7337982322683072780}
   m_Layer: 0
-  m_Name: Ground
+  m_Name: Planet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: bd976345438e8024fa186b463e892820, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -265,6 +265,6 @@ MonoBehaviour:
   _ground: {fileID: 1951202207822617341}
   sphereRadius: 0
   grassCount: 300000
-  grassHeight: 1.5
+  grassHeight: 1
   grassWidth: 0.7
   grassMaterial: {fileID: 2100000, guid: 61bdce2ac8cfcd646b8f5935e2c3e587, type: 2}

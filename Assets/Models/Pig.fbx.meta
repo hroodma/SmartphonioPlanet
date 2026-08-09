@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8d0f3c825f5371e43810df0f41c3ed07
+guid: 4738121993f8c944e9751c4aa856db07
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: 12a29abc-b538-4cca-b2a2-d8ec8a319d36
-    second: {fileID: 2100000, guid: b29753b2a0f690743b768601f0431599, type: 2}
+      name: Pig
+    second: {fileID: 2100000, guid: cff01b2f3f5034b428db0489dd94bb28, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
