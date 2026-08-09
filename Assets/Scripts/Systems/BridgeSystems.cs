@@ -170,6 +170,36 @@ public sealed class ViewSyncSystem : ISystem
     }
 }
 
+public sealed class SoundSyncSystem : ISystem
+{
+    private readonly World world;
+    private readonly Bindings bindings;
+
+    public SoundSyncSystem(World world, Bindings bindings)
+    {
+        this.world = world;
+        this.bindings = bindings;
+    }
+
+    public void Run(float dt)
+    {
+        foreach (KeyValuePair<int, IUnitSound> kv in bindings.Sounds)
+        {
+            if (!world.Units.TryGetValue(kv.Key, out UnitData u))
+            {
+                continue;
+            }
+
+            Vector3 horizontal = Vector3.ProjectOnPlane(u.DesiredVelocity, u.UpDirection);
+            float speed = horizontal.magnitude / u.MoveSpeed;
+
+            if (speed < 0.01f) speed = 0f;
+
+            kv.Value.UpdateFootstepVolume(speed);
+        }
+    }
+}
+
 // ВЫХОД: отдать желаемую скорость и поворот телам.
 public sealed class PhysicsWriteSystem : ISystem
 {

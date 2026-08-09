@@ -36,6 +36,11 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         UnitView view = body.GetComponent<UnitView>();
         if (view != null)
             bindings.Views[data.Id] = view;
+
+        UnitSound sound = body.GetComponent<UnitSound>();
+        if (sound != null)
+            bindings.Sounds[data.Id] = sound;
+
         return data.Id;
     }
 

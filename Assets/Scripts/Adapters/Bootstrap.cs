@@ -49,7 +49,8 @@ public sealed class Bootstrap : MonoBehaviour
         ISystem[] frameSystems =
         {
             new PlayerCommandSystem(world, bindings),
-            new ViewSyncSystem(world, bindings)
+            new ViewSyncSystem(world, bindings),
+            new SoundSyncSystem(world, bindings)
         };
 
         ISystem[] endedSystems =

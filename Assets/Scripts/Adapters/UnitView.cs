@@ -16,6 +16,11 @@ public class UnitView : MonoBehaviour, IUnitView
             return;
 
         Vector3 horizontal = Vector3.ProjectOnPlane(data.DesiredVelocity, data.UpDirection) / data.MoveSpeed;
-        _animator.SetFloat("Speed", horizontal.magnitude);
+        float speed = horizontal.magnitude;
+
+        if (speed < 0.01f)
+            speed = 0f;
+
+        _animator.SetFloat("Speed", speed);
     }
 }

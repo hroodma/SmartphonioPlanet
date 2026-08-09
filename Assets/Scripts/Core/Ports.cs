@@ -13,6 +13,11 @@ public interface IUnitView
     void Render(UnitData data);
 }
 
+public interface IUnitSound
+{
+    void UpdateFootstepVolume(float speed);
+}
+
 public interface IPlayerInput
 {
     PlayerCommand Read();
