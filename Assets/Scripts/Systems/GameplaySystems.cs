@@ -121,7 +121,7 @@ public sealed class EndGameTimerSystem : ISystem
             }
         }
 
-        world.Match.Timer -= dt;
+        world.Match.Timer = Mathf.Max(0, world.Match.Timer - dt);
         Debug.Log($"Осталось: {world.Match.Timer}");
     }
 }

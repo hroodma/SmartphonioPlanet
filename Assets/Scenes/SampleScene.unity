@@ -336,7 +336,7 @@ MonoBehaviour:
   factory: {fileID: 241701006}
   playerInput: {fileID: 1692015001}
   playerUI: {fileID: 1692015008}
-  startTimer: 60
+  startTimer: 90
   playerBody: {fileID: 1692014995}
   playerStats: {fileID: 11400000, guid: 31f288279ec4a6a4b8b8ef2f83a7c94c, type: 2}
 --- !u!4 &283062059
@@ -1870,6 +1870,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 901162234}
     m_Modifications:
+    - target: {fileID: 1744564532028785841, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
+      propertyPath: grassCount
+      value: 300000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744564532028785841, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
+      propertyPath: grassWidth
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 1744564532028785841, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
       propertyPath: grassHeight
       value: 1

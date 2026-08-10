@@ -9,7 +9,9 @@ public class PlayerUI : MonoBehaviour, IPlayerUI
 
     public void UpdateUI(UnitData playerData, float timer)
     {
-        _timerUI.text = timer.ToString();
+        int minutes = Mathf.FloorToInt(timer / 60);
+        int seconds = Mathf.FloorToInt(timer % 60);
+        _timerUI.text = $"{minutes}:{seconds:00}";
 
         _caughtAnimalsUI.text = playerData.CaughtAnimals.ToString();
     }
