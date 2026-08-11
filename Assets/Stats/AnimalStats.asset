@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a433da7e8e4f0343b5a44323ed5597a, type: 3}
   m_Name: AnimalStats
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 3
   acceleration: 20
   turnSpeed: 60
   interactionRadius: 0.7
   unitBunusTime: 3
+  minDirectionDistance: 15
+  maxDirectionDistance: 30

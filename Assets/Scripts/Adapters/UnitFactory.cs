@@ -145,14 +145,24 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 
     private static UnitData MakeData(UnitStats s, UnitKind kind, Vector3 pos)
     {
-        return new UnitData
+        UnitData newUnitData = new UnitData();
+
+        newUnitData.Kind = kind;
+        newUnitData.Position = pos;
+        newUnitData.MoveSpeed = s.moveSpeed;
+        newUnitData.Acceleration = s.acceleration;
+        newUnitData.InteractionRadius = s.interactionRadius;
+
+        switch (kind)
         {
-            Kind = kind,
-            Position = pos,
-            MoveSpeed = s.moveSpeed,
-            Acceleration = s.acceleration,
-            InteractionRadius = s.interactionRadius,
-            UnitBonusTime = s.unitBunusTime
-        };
+            case UnitKind.Animal:
+                newUnitData.UnitBonusTime = s.unitBunusTime;
+                newUnitData.MinDirectionDistance = s.minDirectionDistance;
+                newUnitData.MaxDirectionDistance = s.maxDirectionDistance;
+                newUnitData.IsTurning = false;
+                break;
+        }
+
+        return newUnitData;
     }
 }

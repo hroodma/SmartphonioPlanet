@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public enum UnitKind { Player, Animal }
 
+// НУЖНО БУДЕТ РАЗДЕЛИТЬ ДЛЯ Player и Animal
 public sealed class UnitData
 {
     public int Id;
@@ -31,9 +32,19 @@ public sealed class UnitData
     public float TurnSpeed = 60f;
     public float InteractionRadius;
 
+    // только для Animal
+    public float DetecionDistance;
+    public float fleeSpeed;
+    public float MinDirectionDistance;
+    public float MaxDirectionDistance;
+    public float CurrentWalkDistance;
+    public float TargetWalkDistance;
+    public Vector3 TargetForward;
+    public bool IsTurning;
     public float UnitBonusTime;
-    public float SumBonusTime;
 
+
+    public float SumBonusTime;
     public int CaughtAnimals;
 }
 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4738121993f8c944e9751c4aa856db07
+guid: ce60f080fbdaa664788fe0a8cd4b6681
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Pig
-    second: {fileID: 2100000, guid: cff01b2f3f5034b428db0489dd94bb28, type: 2}
+      name: Cow.001
+    second: {fileID: 2100000, guid: 2d917abbbda079d448e94662a7c538e3, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -81,7 +81,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  importAnimation: 0
   humanDescription:
     serializedVersion: 3
     human: []

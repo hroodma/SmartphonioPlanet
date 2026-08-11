@@ -15,43 +15,98 @@ public sealed class MovementSystem : ISystem
         foreach (UnitData u in world.Units.Values)
         {
             if (!u.Alive) continue;
-
-            if (Mathf.Abs(u.TurnInput) > 0.01f)
+            
+            if (u.Kind == UnitKind.Player)
             {
-                float turnAngle = u.TurnSpeed * u.TurnInput * dt;
-                Quaternion turnRotation = Quaternion.AngleAxis(turnAngle, u.UpDirection);
-                u.Forward = turnRotation * u.Forward;
+                if (Mathf.Abs(u.TurnInput) > 0.01f)
+                {
+                    float turnAngle = u.TurnSpeed * u.TurnInput * dt;
+                    Quaternion turnRotation = Quaternion.AngleAxis(turnAngle, u.UpDirection);
+                    u.Forward = turnRotation * u.Forward;
+                }
+
+                u.Forward = Vector3.ProjectOnPlane(u.Forward, u.UpDirection);
+                if (u.Forward.sqrMagnitude < 0.001f)
+                {
+                    u.Forward = Vector3.ProjectOnPlane(u.Right, u.UpDirection);
+                }
+                u.Forward.Normalize();
+
+                u.Right = Vector3.Cross(u.UpDirection, u.Forward).normalized;
+
+                Vector3 targetVelocity;
+                if (Mathf.Abs(u.MoveInput) < 0.01f)
+                {
+                    targetVelocity = Vector3.zero;
+                }
+                else
+                {
+                    targetVelocity = u.Forward * u.MoveInput * u.MoveSpeed;
+                    targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
+                }
+
+                float accel = Mathf.Abs(u.MoveInput) < 0.01f
+                    ? u.Acceleration * 2f
+                    : u.Acceleration;
+
+                u.HorizontalVelocity = Vector3.MoveTowards(
+                    u.HorizontalVelocity,
+                    targetVelocity,
+                    accel * dt
+                );
             }
 
-            u.Forward = Vector3.ProjectOnPlane(u.Forward, u.UpDirection);
-            if (u.Forward.sqrMagnitude < 0.001f)
+            else if (u.Kind == UnitKind.Animal)
             {
-                u.Forward = Vector3.ProjectOnPlane(u.Right, u.UpDirection);
+                if (!u.IsTurning)
+                {
+                    float distanceMoved = u.HorizontalVelocity.magnitude * dt;
+                    u.CurrentWalkDistance += distanceMoved;
+
+                    if (u.CurrentWalkDistance >= u.TargetWalkDistance)
+                    {
+                        u.IsTurning = true;
+                        u.CurrentWalkDistance = 0f;
+                        u.HorizontalVelocity = Vector3.zero;
+
+                        float randomAngle = Random.Range(-130f, 130f);
+
+                        Quaternion turnRot = Quaternion.AngleAxis(randomAngle, u.UpDirection);
+                        u.TargetForward = Vector3.ProjectOnPlane(turnRot * u.Forward, u.UpDirection).normalized;
+                    }
+                }
+
+                if (u.IsTurning)
+                {
+                    Quaternion currentRot = Quaternion.LookRotation(u.Forward, u.UpDirection);
+                    Quaternion targetRot = Quaternion.LookRotation(u.TargetForward, u.UpDirection);
+
+                    Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, u.TurnSpeed * dt);
+                    u.Forward = newRot * Vector3.forward;
+
+                    if (Vector3.Dot(u.Forward, u.TargetForward) > 0.999f)
+                    {
+                        u.Forward = u.TargetForward;
+                        u.IsTurning = false;
+
+                        u.TargetWalkDistance = Random.Range(u.MinDirectionDistance, u.MaxDirectionDistance);
+                    }
+                }
+                else
+                {
+                    Vector3 targetVelocity = u.Forward * u.MoveSpeed;
+                    targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
+
+                    u.HorizontalVelocity = Vector3.MoveTowards(
+                        u.HorizontalVelocity,
+                        targetVelocity,
+                        u.Acceleration * dt
+                    );
+                }
+
+                // Здесь позже будет логика убегания:
+                // if (Vector3.Distance(u.Position, PlayerPosition) < u.DetecionDistance) { ... }
             }
-            u.Forward.Normalize();
-
-            u.Right = Vector3.Cross(u.UpDirection, u.Forward).normalized;
-
-            Vector3 targetVelocity;
-            if (Mathf.Abs(u.MoveInput) < 0.01f)
-            {
-                targetVelocity = Vector3.zero;
-            }
-            else
-            {
-                targetVelocity = u.Forward * u.MoveInput * u.MoveSpeed;
-                targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
-            }
-
-            float accel = Mathf.Abs(u.MoveInput) < 0.01f
-                ? u.Acceleration * 2f
-                : u.Acceleration;
-
-            u.HorizontalVelocity = Vector3.MoveTowards(
-                u.HorizontalVelocity,
-                targetVelocity,
-                accel * dt
-            );
 
             u.DesiredVelocity = u.HorizontalVelocity + u.VerticalVelocity;
         }
@@ -74,7 +129,7 @@ public sealed class CaughtSystem : ISystem
     {
         caught.Clear();
         foreach (UnitData u in world.Units.Values)
-            if (!u.Alive && !caught.Contains(u.Id))
+            if (!u.Alive)
                 caught.Add(u.Id);
 
         foreach (int id in caught)
