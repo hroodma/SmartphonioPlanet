@@ -79,8 +79,10 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 
         if (bindings.Bodies.TryGetValue(id, out IBody body) && body is Component c)
         {
-            c.transform.position = RandomPointOnSphere();
-            u.Position = RandomPointOnSphere();
+            Vector3 newRandomPoint = RandomPointOnSphere();
+
+            c.transform.position = newRandomPoint;
+            u.Position = newRandomPoint;
         }
     }
 
