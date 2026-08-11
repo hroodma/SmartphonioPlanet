@@ -8,12 +8,14 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 
     [Header("Animal prefabs")]
     [SerializeField] private GameObject rabbitPrefab;
+    [SerializeField] private GameObject cowPrefab;
 
     [Header("Animal spawn points")]
     [SerializeField] private Transform animalSpawnpoint;
 
     [Header("Animal stats (ScriptableObject)")]
-    [SerializeField] private UnitStats animalStats;
+    [SerializeField] private AnimalStats rabbitStats;
+    [SerializeField] private AnimalStats cowStats;
 
     private World world;
     private Bindings bindings;
@@ -48,11 +50,12 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
     {
         for (int i = 0; i < waveCount; i++)
         {
-            SpawnAnimal(rabbitPrefab, RandomPointOnSphere());
+            SpawnAnimal(rabbitPrefab, RandomPointOnSphere(), rabbitStats);
+            SpawnAnimal(cowPrefab, RandomPointOnSphere(), cowStats);
         }
     }
 
-    private void SpawnAnimal(GameObject prefab, Vector3 point)
+    private void SpawnAnimal(GameObject prefab, Vector3 point, AnimalStats stats)
     {
         if (prefab == null || point == null)
             return;
@@ -66,7 +69,7 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         if (go.GetComponent<UnitView>() == null)
             go.AddComponent<UnitView>();
 
-        RegisterBody(body, animalStats, UnitKind.Animal);
+        RegisterBody(body, stats, UnitKind.Animal);
     }
 
     public void Respawn(int id)
@@ -152,14 +155,21 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         newUnitData.MoveSpeed = s.moveSpeed;
         newUnitData.Acceleration = s.acceleration;
         newUnitData.InteractionRadius = s.interactionRadius;
+        newUnitData.Tag = AnimalTag.None;
 
-        switch (kind)
+        switch (s)
         {
-            case UnitKind.Animal:
-                newUnitData.UnitBonusTime = s.unitBunusTime;
-                newUnitData.MinDirectionDistance = s.minDirectionDistance;
-                newUnitData.MaxDirectionDistance = s.maxDirectionDistance;
+            case AnimalStats animal:
+                newUnitData.UnitBonusTime = animal.unitBunusTime;
+                newUnitData.DetecionDistance = animal.detectionDistance;
+                newUnitData.MinDirectionDistance = animal.minDirectionDistance;
+                newUnitData.MaxDirectionDistance = animal.maxDirectionDistance;
                 newUnitData.IsTurning = false;
+                newUnitData.Tag = animal.tag;
+                break;
+
+            default:
+                Debug.LogWarning($"Неизвестный тип UnitStats: {s.GetType()}");
                 break;
         }
 

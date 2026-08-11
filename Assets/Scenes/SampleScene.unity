@@ -163,10 +163,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d46999764acfc8744b60739117f80fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waveCount: 100
+  waveCount: 25
   rabbitPrefab: {fileID: 3762978145848300065, guid: 74fbd9e96607ddd4fbc7eae7ab4eecde, type: 3}
+  cowPrefab: {fileID: 9199963824193889442, guid: 72fb8af959eede04abff3524a6deaa9d, type: 3}
   animalSpawnpoint: {fileID: 1215958435}
-  animalStats: {fileID: 11400000, guid: 1ddc6122910006b429dd56dab1e17174, type: 2}
+  rabbitStats: {fileID: 11400000, guid: 516a9f4cc33e7024891ff34ddd2aba76, type: 2}
+  cowStats: {fileID: 11400000, guid: e8d03a3d41900e749bf9cfa6f5ef837b, type: 2}
 --- !u!1 &271208203
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,6 +1505,10 @@ PrefabInstance:
     - target: {fileID: 1082003298924841436, guid: 54268a2d2f75db94aa41a0daa7a44155, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1212068474975961294, guid: 54268a2d2f75db94aa41a0daa7a44155, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 1360554392075244465, guid: 54268a2d2f75db94aa41a0daa7a44155, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

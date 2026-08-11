@@ -9,10 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a433da7e8e4f0343b5a44323ed5597a, type: 3}
-  m_Name: PlayerStats
-  m_EditorClassIdentifier: 
-  moveSpeed: 4
-  acceleration: 30
+  m_Script: {fileID: 0}
+  m_Name: RabbitStats
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalStats
+  moveSpeed: 7
+  acceleration: 20
   turnSpeed: 60
   interactionRadius: 0.7
+  tag: 1
+  unitBunusTime: 5
+  detectionDistance: 5
+  minDirectionDistance: 15
+  maxDirectionDistance: 30

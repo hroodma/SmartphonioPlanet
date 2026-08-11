@@ -5,12 +5,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum UnitKind { Player, Animal }
+public enum AnimalTag { None, Rabbit, Cow }
 
 // НУЖНО БУДЕТ РАЗДЕЛИТЬ ДЛЯ Player и Animal
 public sealed class UnitData
 {
     public int Id;
     public UnitKind Kind;
+    public AnimalTag Tag;
 
     public bool Alive = true;
 

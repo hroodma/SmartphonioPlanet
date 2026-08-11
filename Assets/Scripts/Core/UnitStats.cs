@@ -7,8 +7,16 @@ public class UnitStats : ScriptableObject
     public float acceleration = 20f;
     public float turnSpeed = 60f;
     public float interactionRadius = 0.7f;
+}
+
+[CreateAssetMenu(fileName = "Animal Stats", menuName = "UnitStats/Animals")]
+public class AnimalStats : UnitStats
+{
+    public AnimalTag tag;
+
     public float unitBunusTime = 3f;
 
-    public float minDirectionDistance = 2f;
-    public float maxDirectionDistance = 10f;
+    public float detectionDistance = 5f;
+    public float minDirectionDistance = 15f;
+    public float maxDirectionDistance = 30f;
 }
