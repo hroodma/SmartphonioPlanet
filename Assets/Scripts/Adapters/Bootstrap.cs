@@ -1,13 +1,13 @@
-using System;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public sealed class Bootstrap : MonoBehaviour
 {
     [Header("Wiring")]
     [SerializeField] private GameLoop loop;
     [SerializeField] private UnitFactory factory;
-    [SerializeField] private PlayerInputAdapter playerInput;
+    [SerializeField] private PlayerInputAdapter keyboardInput;
+    [SerializeField] private JoystickInputAdapter joystickInput;
     [SerializeField] private PlayerUI playerUI;
     [SerializeField] private float startTimer;
 
@@ -24,7 +24,21 @@ public sealed class Bootstrap : MonoBehaviour
         world.Match.Timer = startTimer;
 
         factory.Init(world, bindings);
-        bindings.PlayerInput = playerInput;
+
+        if (Application.platform == RuntimePlatform.Android ||
+            Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            bindings.PlayerInput = joystickInput;
+            if (joystickInput != null)
+                joystickInput.ShowJoystick(true);
+        }
+        else
+        {
+            bindings.PlayerInput = keyboardInput;
+            if (joystickInput != null)
+                joystickInput.ShowJoystick(false);
+        }
+
         bindings.PlayerUI = playerUI;
 
         // TECT TECT TECT TECT TECT TECT TECT TECT TECT TECT
@@ -66,16 +80,5 @@ public sealed class Bootstrap : MonoBehaviour
 
         GameManager game = new GameManager(world, fixedSystems, frameSystems, endedSystems);
         loop.Bind(game);
-    }
-
-    private UnitData TestUnitData()
-    {
-        UnitData unitData = new UnitData();
-        unitData.Id = 1;
-        unitData.MoveSpeed = 5f;
-        unitData.TurnSpeed = 60f;
-        unitData.UpDirection = Vector3.up;
-
-        return unitData;
     }
 }

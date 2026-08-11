@@ -39,8 +39,8 @@ public sealed class PlayerCommandSystem : ISystem
 
     public void Run(float dt)
     {
-        //if (world.Match.Over || bindings.PlayerInput == null)
-        //    return;
+        if (world.Match.Over || bindings.PlayerInput == null)
+            return;
         if (!world.Units.TryGetValue(bindings.PlayerId, out UnitData player) || !player.Alive)
             return;
 
@@ -59,6 +59,9 @@ public sealed class PlayerCommandSystem : ISystem
                 player.TurnInput = Mathf.Sign(cmd.MoveAxis.x);
             else
                 player.TurnInput = 0f;
+
+            if (player.MoveInput < 0)
+                player.TurnInput *= -1;
         }
         else
         {
