@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum UnitKind { Player, Animal }
-public enum AnimalTag { None, Rabbit, Cow }
+public enum AnimalTag { None, Rabbit, Cow, Pig, Sheep, Horse }
 
 // НУЖНО БУДЕТ РАЗДЕЛИТЬ ДЛЯ Player и Animal
 public sealed class UnitData

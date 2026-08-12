@@ -8,14 +8,17 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 
     [Header("Animal prefabs")]
     [SerializeField] private GameObject rabbitPrefab;
+    [SerializeField] private GameObject sheepPrefab;
+    [SerializeField] private GameObject horsePrefab;
     [SerializeField] private GameObject cowPrefab;
-
-    [Header("Animal spawn points")]
-    [SerializeField] private Transform animalSpawnpoint;
+    [SerializeField] private GameObject pigPrefab;
 
     [Header("Animal stats (ScriptableObject)")]
     [SerializeField] private AnimalStats rabbitStats;
+    [SerializeField] private AnimalStats sheepStats;
+    [SerializeField] private AnimalStats horseStats;
     [SerializeField] private AnimalStats cowStats;
+    [SerializeField] private AnimalStats pigStats;
 
     private World world;
     private Bindings bindings;
@@ -51,7 +54,10 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         for (int i = 0; i < waveCount; i++)
         {
             SpawnAnimal(rabbitPrefab, RandomPointOnSphere(), rabbitStats);
+            SpawnAnimal(sheepPrefab, RandomPointOnSphere(), sheepStats);
+            SpawnAnimal(horsePrefab, RandomPointOnSphere(), horseStats);
             SpawnAnimal(cowPrefab, RandomPointOnSphere(), cowStats);
+            SpawnAnimal(pigPrefab, RandomPointOnSphere(), pigStats);
         }
     }
 
@@ -161,7 +167,6 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         switch (s)
         {
             case AnimalStats animal:
-                newUnitData.FleeSpeed = animal.fleeSpeed;
                 newUnitData.UnitBonusTime = animal.unitBunusTime;
                 newUnitData.DetecionDistance = animal.detectionDistance;
                 newUnitData.MinDirectionDistance = animal.minDirectionDistance;

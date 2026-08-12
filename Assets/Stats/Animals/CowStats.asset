@@ -10,16 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: RabbitStats
+  m_Name: CowStats
   m_EditorClassIdentifier: Assembly-CSharp::AnimalStats
-  maxSpeed: 7
-  moveSpeed: 4.66
-  acceleration: 20
+  maxSpeed: 3
+  moveSpeed: 2
+  acceleration: 5
   turnSpeed: 60
   interactionRadius: 0.7
-  tag: 1
-  fleeSpeed: 7
-  unitBunusTime: 5
-  detectionDistance: 10
+  unitBunusTime: 2
+  detectionDistance: 8
   minDirectionDistance: 15
   maxDirectionDistance: 30
+  tag: 2

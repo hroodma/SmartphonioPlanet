@@ -163,12 +163,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d46999764acfc8744b60739117f80fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waveCount: 25
+  waveCount: 10
   rabbitPrefab: {fileID: 3762978145848300065, guid: 74fbd9e96607ddd4fbc7eae7ab4eecde, type: 3}
+  sheepPrefab: {fileID: 3039049597304252175, guid: 5453e51292d42ee4299cfe308c53230f, type: 3}
+  horsePrefab: {fileID: 1449787152747059316, guid: d8469a6bbd3f87e48aa56528a53f8e62, type: 3}
   cowPrefab: {fileID: 9199963824193889442, guid: 72fb8af959eede04abff3524a6deaa9d, type: 3}
-  animalSpawnpoint: {fileID: 1215958435}
+  pigPrefab: {fileID: 6461908215901630855, guid: 6ac9d340f3a924c449dd4b8631dffd17, type: 3}
   rabbitStats: {fileID: 11400000, guid: 516a9f4cc33e7024891ff34ddd2aba76, type: 2}
+  sheepStats: {fileID: 11400000, guid: f932cdc9fe99ec54283681e91bac385a, type: 2}
+  horseStats: {fileID: 11400000, guid: d0c2120647285ff46b615939a4f05336, type: 2}
   cowStats: {fileID: 11400000, guid: e8d03a3d41900e749bf9cfa6f5ef837b, type: 2}
+  pigStats: {fileID: 11400000, guid: def8410efa5441441a8586bef676bdc4, type: 2}
 --- !u!1 &271208203
 GameObject:
   m_ObjectHideFlags: 0
@@ -1588,6 +1593,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2407368371136297441, guid: 54268a2d2f75db94aa41a0daa7a44155, type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2435336077781224420, guid: 54268a2d2f75db94aa41a0daa7a44155, type: 3}
+      propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2507465617652542257, guid: 54268a2d2f75db94aa41a0daa7a44155, type: 3}
