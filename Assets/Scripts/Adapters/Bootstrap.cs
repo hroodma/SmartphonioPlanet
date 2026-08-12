@@ -60,6 +60,7 @@ public sealed class Bootstrap : MonoBehaviour
             new PlanetGravitySystem(world),
             new InteractionSystem(world),
             new MovementSystem(world),
+            new AnimalMovementSystem(world),
             new CaughtSystem(world, factory),
             write
         };

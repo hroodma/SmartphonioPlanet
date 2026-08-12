@@ -56,7 +56,27 @@ public sealed class MovementSystem : ISystem
                 );
             }
 
-            else if (u.Kind == UnitKind.Animal)
+            u.DesiredVelocity = u.HorizontalVelocity + u.VerticalVelocity;
+        }
+    }
+}
+
+public sealed class AnimalMovementSystem : ISystem
+{
+    private readonly World world;
+
+    public AnimalMovementSystem(World world)
+    {
+        this.world = world;
+    }
+
+    public void Run(float dt)
+    {
+        foreach (UnitData u in world.Units.Values)
+        {
+            if (!u.Alive) continue;
+
+            if (u.Kind == UnitKind.Animal)
             {
                 if (!u.IsTurning)
                 {
@@ -107,10 +127,8 @@ public sealed class MovementSystem : ISystem
                 // Здесь позже будет логика убегания:
                 // if (Vector3.Distance(u.Position, PlayerPosition) < u.DetecionDistance) { ... }
             }
-
-            u.DesiredVelocity = u.HorizontalVelocity + u.VerticalVelocity;
-        }
-    }
+        }        
+    }    
 }
 
 public sealed class CaughtSystem : ISystem
