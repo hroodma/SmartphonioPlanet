@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4738121993f8c944e9751c4aa856db07
+guid: 9c5d447945631534b916b4a67cdc6d4e
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Pig
-    second: {fileID: 2100000, guid: cff01b2f3f5034b428db0489dd94bb28, type: 2}
+      name: Sheep
+    second: {fileID: 2100000, guid: b5ff0ae44794dbd46ba46904692291fc, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -98,7 +98,7 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 8d0f3c825f5371e43810df0f41c3ed07, type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: f79b0f3eeb4639d48abd9cb222dcaff5, type: 2}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
