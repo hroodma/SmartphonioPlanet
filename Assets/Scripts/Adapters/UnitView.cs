@@ -15,7 +15,7 @@ public class UnitView : MonoBehaviour, IUnitView
         if (_animator == null)
             return;
 
-        Vector3 horizontal = Vector3.ProjectOnPlane(data.DesiredVelocity, data.UpDirection) / data.MoveSpeed;
+        Vector3 horizontal = Vector3.ProjectOnPlane(data.DesiredVelocity, data.UpDirection) / data.MaxSpeed;
         float speed = horizontal.magnitude;
 
         if (speed < 0.01f)

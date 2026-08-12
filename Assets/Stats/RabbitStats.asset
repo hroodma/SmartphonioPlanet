@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RabbitStats
   m_EditorClassIdentifier: Assembly-CSharp::AnimalStats
-  moveSpeed: 7
+  maxSpeed: 7
+  moveSpeed: 4.66
   acceleration: 20
   turnSpeed: 60
   interactionRadius: 0.7
   tag: 1
   fleeSpeed: 7
   unitBunusTime: 5
-  detectionDistance: 5
+  detectionDistance: 10
   minDirectionDistance: 15
   maxDirectionDistance: 30

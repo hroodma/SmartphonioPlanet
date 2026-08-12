@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a433da7e8e4f0343b5a44323ed5597a, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
+  maxSpeed: 16
   moveSpeed: 8
   acceleration: 30
   turnSpeed: 60

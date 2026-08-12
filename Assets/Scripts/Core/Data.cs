@@ -24,6 +24,7 @@ public sealed class UnitData
     public Vector3 Forward;
     public Vector3 Right;
 
+    public float MaxSpeed;
     public float MoveSpeed;
     public float Acceleration;
     public Vector3 MoveDirection;

@@ -152,6 +152,7 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 
         newUnitData.Kind = kind;
         newUnitData.Position = pos;
+        newUnitData.MaxSpeed = s.maxSpeed;
         newUnitData.MoveSpeed = s.moveSpeed;
         newUnitData.Acceleration = s.acceleration;
         newUnitData.InteractionRadius = s.interactionRadius;

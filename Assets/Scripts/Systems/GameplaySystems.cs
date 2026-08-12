@@ -161,7 +161,7 @@ public sealed class AnimalMovementSystem : ISystem
         Quaternion newRot = Quaternion.RotateTowards(currentRot, fleeRot, u.TurnSpeed * 3f * dt);
         u.Forward = newRot * Vector3.forward;
 
-        Vector3 targetVelocity = u.Forward * u.FleeSpeed;
+        Vector3 targetVelocity = u.Forward * u.MaxSpeed;
         targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
 
         u.HorizontalVelocity = Vector3.MoveTowards(
