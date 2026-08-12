@@ -249,3 +249,32 @@ public sealed class PhysicsWriteSystem : ISystem
         }
     }
 }
+
+public sealed class MatchEndView : ISystem
+{
+    private readonly World world;
+    private readonly Bindings bindings;
+    private readonly GameResultUI ui;
+    private bool shown;
+
+    public MatchEndView(World world, Bindings bindings, GameResultUI ui)
+    {
+        this.world = world;
+        this.bindings = bindings;
+        this.ui = ui;
+    }
+
+    public void Run(float dt)
+    {
+        if (shown || !world.Match.Over || ui == null)
+            return;
+
+        shown = true;
+
+        UnitData playerData;
+        if (world.Units.TryGetValue(bindings.PlayerId, out UnitData u))
+            playerData = u;
+
+        ui.ShowResult(u.CaughtAnimals);
+    }
+}

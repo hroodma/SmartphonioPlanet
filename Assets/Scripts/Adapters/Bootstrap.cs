@@ -9,6 +9,7 @@ public sealed class Bootstrap : MonoBehaviour
     [SerializeField] private PlayerInputAdapter keyboardInput;
     [SerializeField] private JoystickInputAdapter joystickInput;
     [SerializeField] private PlayerUI playerUI;
+    [SerializeField] private GameResultUI gameResultUI;
     [SerializeField] private float startTimer;
 
     [Header("Placed units")]
@@ -71,12 +72,14 @@ public sealed class Bootstrap : MonoBehaviour
             new EndGameTimerSystem(world),
             new PlayerUISyncSystem(world, bindings),
             new ViewSyncSystem(world, bindings),
-            new SoundSyncSystem(world, bindings)
+            new SoundSyncSystem(world, bindings),
+            new MatchEndView(world, bindings, gameResultUI)
         };
 
         ISystem[] endedSystems =
         {
-
+            new FreezeSystem(world),
+            write
         };
 
         GameManager game = new GameManager(world, fixedSystems, frameSystems, endedSystems);

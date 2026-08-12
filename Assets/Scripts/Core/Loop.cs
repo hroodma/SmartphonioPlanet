@@ -20,12 +20,9 @@ public sealed class GameManager
 
     public void FixedTick(float dt)
     {
-        //ISystem[] pipeline = world.Match.Over ? endedSystems : fixedSystems;
-        //for (int i = 0; i < pipeline.Length; i++)
-        //    pipeline[i].Run(dt);
-
-        for (int i = 0; i < fixedSystems.Length; i++)
-            fixedSystems[i].Run(dt);
+        ISystem[] pipeline = world.Match.Over ? endedSystems : fixedSystems;
+        for (int i = 0; i < pipeline.Length; i++)
+            pipeline[i].Run(dt);
     }
 
     public void FrameTick(float dt)

@@ -239,3 +239,19 @@ public sealed class EndGameTimerSystem : ISystem
         Debug.Log($"Осталось: {world.Match.Timer}");
     }
 }
+
+public sealed class FreezeSystem : ISystem
+{
+    private readonly World world;
+
+    public FreezeSystem(World world)
+    {
+        this.world = world;
+    }
+
+    public void Run(float dt)
+    {
+        foreach (UnitData u in world.Units.Values)
+            u.DesiredVelocity = Vector3.zero;
+    }
+}
