@@ -64,71 +64,112 @@ public sealed class MovementSystem : ISystem
 public sealed class AnimalMovementSystem : ISystem
 {
     private readonly World world;
+    private readonly Bindings bindings;
 
-    public AnimalMovementSystem(World world)
+    public AnimalMovementSystem(World world, Bindings bindings)
     {
         this.world = world;
+        this.bindings = bindings;
     }
 
     public void Run(float dt)
     {
+        Vector3 playerPosition = new Vector3();
+
+        if (world.Units.TryGetValue(bindings.PlayerId, out UnitData playerData))
+            playerPosition = playerData.Position;
+
         foreach (UnitData u in world.Units.Values)
         {
             if (!u.Alive) continue;
 
             if (u.Kind == UnitKind.Animal)
             {
-                if (!u.IsTurning)
-                {
-                    float distanceMoved = u.HorizontalVelocity.magnitude * dt;
-                    u.CurrentWalkDistance += distanceMoved;
+                Vector3 toPlayer = playerPosition - u.Position;
 
-                    if (u.CurrentWalkDistance >= u.TargetWalkDistance)
-                    {
-                        u.IsTurning = true;
-                        u.CurrentWalkDistance = 0f;
-                        u.HorizontalVelocity = Vector3.zero;
-
-                        float randomAngle = Random.Range(-130f, 130f);
-
-                        Quaternion turnRot = Quaternion.AngleAxis(randomAngle, u.UpDirection);
-                        u.TargetForward = Vector3.ProjectOnPlane(turnRot * u.Forward, u.UpDirection).normalized;
-                    }
-                }
-
-                if (u.IsTurning)
-                {
-                    Quaternion currentRot = Quaternion.LookRotation(u.Forward, u.UpDirection);
-                    Quaternion targetRot = Quaternion.LookRotation(u.TargetForward, u.UpDirection);
-
-                    Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, u.TurnSpeed * dt);
-                    u.Forward = newRot * Vector3.forward;
-
-                    if (Vector3.Dot(u.Forward, u.TargetForward) > 0.999f)
-                    {
-                        u.Forward = u.TargetForward;
-                        u.IsTurning = false;
-
-                        u.TargetWalkDistance = Random.Range(u.MinDirectionDistance, u.MaxDirectionDistance);
-                    }
-                }
+                if (Vector3.Distance(u.Position, playerPosition) < u.DetecionDistance)
+                    RunningLogic(toPlayer, u, dt);
                 else
-                {
-                    Vector3 targetVelocity = u.Forward * u.MoveSpeed;
-                    targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
-
-                    u.HorizontalVelocity = Vector3.MoveTowards(
-                        u.HorizontalVelocity,
-                        targetVelocity,
-                        u.Acceleration * dt
-                    );
-                }
-
-                // Здесь позже будет логика убегания:
-                // if (Vector3.Distance(u.Position, PlayerPosition) < u.DetecionDistance) { ... }
+                    WanderingLogic(u, dt);
             }
         }        
-    }    
+    }
+
+    public void WanderingLogic(UnitData u, float dt)
+    {
+        if (!u.IsTurning)
+        {
+            float distanceMoved = u.HorizontalVelocity.magnitude * dt;
+            u.CurrentWalkDistance += distanceMoved;
+
+            if (u.CurrentWalkDistance >= u.TargetWalkDistance)
+            {
+                u.IsTurning = true;
+                u.CurrentWalkDistance = 0f;
+                u.HorizontalVelocity = Vector3.zero;
+
+                float randomAngle = Random.Range(-130f, 130f);
+
+                Quaternion turnRot = Quaternion.AngleAxis(randomAngle, u.UpDirection);
+                u.TargetForward = Vector3.ProjectOnPlane(turnRot * u.Forward, u.UpDirection).normalized;
+            }
+        }
+
+        if (u.IsTurning)
+        {
+            Quaternion currentRot = Quaternion.LookRotation(u.Forward, u.UpDirection);
+            Quaternion targetRot = Quaternion.LookRotation(u.TargetForward, u.UpDirection);
+
+            Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, u.TurnSpeed * dt);
+            u.Forward = newRot * Vector3.forward;
+
+            if (Vector3.Dot(u.Forward, u.TargetForward) > 0.999f)
+            {
+                u.Forward = u.TargetForward;
+                u.IsTurning = false;
+
+                u.TargetWalkDistance = Random.Range(u.MinDirectionDistance, u.MaxDirectionDistance);
+            }
+        }
+        else
+        {
+            Vector3 targetVelocity = u.Forward * u.MoveSpeed;
+            targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
+
+            u.HorizontalVelocity = Vector3.MoveTowards(
+                u.HorizontalVelocity,
+                targetVelocity,
+                u.Acceleration * dt
+            );
+        }
+    }
+    
+    public void RunningLogic(Vector3 toPlayer, UnitData u, float dt)
+    {
+        Vector3 fleeDirection = -toPlayer.normalized;
+
+        fleeDirection = Vector3.ProjectOnPlane(fleeDirection, u.UpDirection).normalized;
+
+        if (fleeDirection.sqrMagnitude < 0.001f)
+        {
+            fleeDirection = Vector3.Cross(u.UpDirection, Vector3.right).normalized;
+        }
+
+        Quaternion currentRot = Quaternion.LookRotation(u.Forward, u.UpDirection);
+        Quaternion fleeRot = Quaternion.LookRotation(fleeDirection, u.UpDirection);
+
+        Quaternion newRot = Quaternion.RotateTowards(currentRot, fleeRot, u.TurnSpeed * 3f * dt);
+        u.Forward = newRot * Vector3.forward;
+
+        Vector3 targetVelocity = u.Forward * u.FleeSpeed;
+        targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
+
+        u.HorizontalVelocity = Vector3.MoveTowards(
+            u.HorizontalVelocity,
+            targetVelocity,
+            u.Acceleration * dt
+        );
+    }
 }
 
 public sealed class CaughtSystem : ISystem

@@ -14,6 +14,8 @@ public class AnimalStats : UnitStats
 {
     public AnimalTag tag;
 
+    public float fleeSpeed = 5f;
+
     public float unitBunusTime = 3f;
 
     public float detectionDistance = 5f;

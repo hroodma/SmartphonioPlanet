@@ -17,6 +17,7 @@ MonoBehaviour:
   turnSpeed: 60
   interactionRadius: 0.7
   tag: 1
+  fleeSpeed: 7
   unitBunusTime: 5
   detectionDistance: 5
   minDirectionDistance: 15

@@ -160,6 +160,7 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         switch (s)
         {
             case AnimalStats animal:
+                newUnitData.FleeSpeed = animal.fleeSpeed;
                 newUnitData.UnitBonusTime = animal.unitBunusTime;
                 newUnitData.DetecionDistance = animal.detectionDistance;
                 newUnitData.MinDirectionDistance = animal.minDirectionDistance;

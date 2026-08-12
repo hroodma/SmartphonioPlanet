@@ -36,7 +36,7 @@ public sealed class UnitData
 
     // только для Animal
     public float DetecionDistance;
-    public float fleeSpeed;
+    public float FleeSpeed;
     public float MinDirectionDistance;
     public float MaxDirectionDistance;
     public float CurrentWalkDistance;
