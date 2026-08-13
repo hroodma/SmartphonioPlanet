@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animalEveryoneCount: 10
-  speedBoosterCount: 4
+  speedBoosterCount: 1
   rabbitPrefab: {fileID: 3762978145848300065, guid: 74fbd9e96607ddd4fbc7eae7ab4eecde, type: 3}
   sheepPrefab: {fileID: 3039049597304252175, guid: 5453e51292d42ee4299cfe308c53230f, type: 3}
   horsePrefab: {fileID: 1449787152747059316, guid: d8469a6bbd3f87e48aa56528a53f8e62, type: 3}
