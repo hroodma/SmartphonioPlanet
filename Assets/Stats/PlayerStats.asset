@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: PlayerStats
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  maxSpeed: 0
+  maxSpeed: 10
   moveSpeed: 5
-  acceleration: 20
+  acceleration: 30
   turnSpeed: 60
   interactionRadius: 0.7
-  InteractionRadius: 0.7

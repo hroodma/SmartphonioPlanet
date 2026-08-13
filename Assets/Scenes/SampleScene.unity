@@ -422,9 +422,9 @@ MonoBehaviour:
   joystickInput: {fileID: 1692015013}
   playerUI: {fileID: 1692015008}
   gameResultUI: {fileID: 466474331}
-  startTimer: 10
+  startTimer: 90
   playerBody: {fileID: 1692014995}
-  playerStats: {fileID: 11400000, guid: 31f288279ec4a6a4b8b8ef2f83a7c94c, type: 2}
+  playerStats: {fileID: 11400000, guid: bb6172cde7df35742a1851562cacc393, type: 2}
 --- !u!4 &283062059
 Transform:
   m_ObjectHideFlags: 0
