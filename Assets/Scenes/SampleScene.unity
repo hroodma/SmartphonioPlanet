@@ -254,7 +254,7 @@ MonoBehaviour:
   cowStats: {fileID: 11400000, guid: e8d03a3d41900e749bf9cfa6f5ef837b, type: 2}
   pigStats: {fileID: 11400000, guid: def8410efa5441441a8586bef676bdc4, type: 2}
   speedBoosterPrefab: {fileID: 3192982623250956260, guid: 32b73ad311110a54db344f08595396d7, type: 3}
-  speedBoosterStats: {fileID: 11400000, guid: ba478d5f1f5e187428943b85aff429e7, type: 2}
+  speedBoosterStats: {fileID: 11400000, guid: a030b65785d1f05499f96e1040abf23c, type: 2}
 --- !u!1 &271208203
 GameObject:
   m_ObjectHideFlags: 0
@@ -1554,37 +1554,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 921236916}
   m_CullTransparentMesh: 1
---- !u!1 &1215958434
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1215958435}
-  m_Layer: 0
-  m_Name: AnimalSpawnpoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1215958435
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1215958434}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.41, y: 21.9, z: 5.61}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1694571326}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1336494020
 GameObject:
   m_ObjectHideFlags: 0
@@ -1928,7 +1897,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1215958435}
   - {fileID: 1692015000}
   m_Father: {fileID: 762837173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

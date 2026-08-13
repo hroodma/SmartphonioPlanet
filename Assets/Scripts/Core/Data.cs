@@ -78,7 +78,6 @@ public sealed class PlayerData : IPlayer
     public bool IsInteract { get; set; }
     public IInteractable Interactable { get; set; }
 
-    // ✅ Новый флаг специально для звука
     public bool PlayPickupSound { get; set; }
 }
 

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: bd0276071b20f5e42ad05c38a788e8d4, type: 3}
   m_Name: PlayerStats
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  m_EditorClassIdentifier: 
   maxSpeed: 10
   defaultSpeed: 5
   acceleration: 30

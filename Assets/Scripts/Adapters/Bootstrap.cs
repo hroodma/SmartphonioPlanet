@@ -53,6 +53,10 @@ public sealed class Bootstrap : MonoBehaviour
 
         bindings.PlayerUI = playerUI;
 
+        Debug.Log($"{playerStats}");
+        Debug.Log($"{playerStats.maxSpeed}");
+        Debug.Log($"{playerBody}");
+
         // Усыновляем то, что уже расставлено в сцене.
         if (playerBody != null)
             bindings.PlayerId = factory.RegisterBody(playerBody, playerStats, UnitKind.Player);
