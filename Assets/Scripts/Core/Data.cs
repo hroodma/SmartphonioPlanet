@@ -35,6 +35,7 @@ public interface ICaughtable : IEntity
 public interface IPlayer : IMoveable
 {
     bool IsInteract { get; set; }
+    IInteractable Interactable { get; set; }
 }
 
 public interface IAnimal : IInteractable, ICaughtable, IMoveable
@@ -75,6 +76,10 @@ public sealed class PlayerData : IPlayer
     public float InteractionRadius;
 
     public bool IsInteract { get; set; }
+    public IInteractable Interactable { get; set; }
+
+    // ✅ Новый флаг специально для звука
+    public bool PlayPickupSound { get; set; }
 }
 
 public sealed class AnimalData : IAnimal

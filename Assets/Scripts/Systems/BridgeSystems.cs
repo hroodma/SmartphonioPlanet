@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public sealed class PhysicsReadSystem : ISystem
 {
@@ -150,13 +153,17 @@ public sealed class InteractionSystem : ISystem
 
                 world.Player.CaughtAnimals++;
                 world.Player.SumBonusTime += animal.UnitBonusTime;
+                world.Player.Interactable = animal;
                 animal.IsCaughted = true;
                 break;
 
             case IBooster booster:
                 if(booster.IsTaken) return;
 
+                world.Player.Interactable = booster;
                 booster.IsTaken = true;
+
+                world.Player.PlayPickupSound = true;
                 break;
         }
 
@@ -244,14 +251,32 @@ public sealed class SoundSyncSystem : ISystem
 
     public void Run(float dt)
     {
+        // 1. ✅ Обработка звука подбора (срабатывает только для игрока и только 1 раз)
+        if (world.Player != null && world.Player.PlayPickupSound)
+        {
+            if (bindings.Sounds.TryGetValue(world.Player.Data.Id, out IUnitSound playerSound))
+            {
+                playerSound.PlayInteractSound(world.Player.Interactable.Data.Kind);
+            }
+
+            // Сразу сбрасываем флаг, чтобы звук не зациклился
+            world.Player.PlayPickupSound = false;
+        }
+
+        // 2. ✅ Обновление громкости шагов для ВСЕХ движущихся сущностей
         foreach (KeyValuePair<int, IUnitSound> kv in bindings.Sounds)
         {
             if (!world.Entities.TryGetValue(kv.Key, out IEntity e)) continue;
-
             if (!(e is IMoveable moveable)) continue;
 
-            Vector3 horizontal = Vector3.ProjectOnPlane(moveable.Movement.DesiredVelocity, moveable.Movement.UpDirection);
-            float speed = horizontal.magnitude / moveable.Movement.CurrentSpeed;
+            Vector3 horizontal = Vector3.ProjectOnPlane(
+                moveable.Movement.DesiredVelocity,
+                moveable.Movement.UpDirection
+            );
+
+            float speed = moveable.Movement.CurrentSpeed > 0f
+                ? horizontal.magnitude / moveable.Movement.CurrentSpeed
+                : 0f;
 
             if (speed < 0.01f) speed = 0f;
 

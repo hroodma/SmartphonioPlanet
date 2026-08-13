@@ -22,6 +22,7 @@ public interface IUnitView
 public interface IUnitSound
 {
     void UpdateFootstepVolume(float speed);
+    void PlayInteractSound(UnitKind kind);
 }
 
 public interface IPlayerInput

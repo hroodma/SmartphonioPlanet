@@ -4,9 +4,11 @@ public sealed class UnitSound : MonoBehaviour, IUnitSound
 {
     [Header("Audio Sources")]
     [SerializeField] private AudioSource _footstepSource;
+    [SerializeField] private AudioSource _interactSource;
 
     [Header("Sounds")]
     [SerializeField] private AudioClip _footstepSound;
+    [SerializeField] private AudioClip _crunchSound;
 
     private void Awake()
     {
@@ -29,6 +31,19 @@ public sealed class UnitSound : MonoBehaviour, IUnitSound
 
         _footstepSource.pitch = pitch;
         _footstepSource.PlayOneShot(clip, 0.3f);
+    }
+
+    public void PlayInteractSound(UnitKind kind)
+    {
+        Debug.Log("PlayInteractSound");
+        switch (kind)
+        {
+            case UnitKind.Booster:
+                if (_interactSource == null) return;
+                _interactSource.PlayOneShot(_crunchSound);
+                Debug.Log("Play crunch");
+                break;
+        }
     }
 
     public void UpdateFootstepVolume(float speed)
