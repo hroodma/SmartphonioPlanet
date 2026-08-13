@@ -9,6 +9,7 @@ public sealed class UnitSound : MonoBehaviour, IUnitSound
     [Header("Sounds")]
     [SerializeField] private AudioClip _footstepSound;
     [SerializeField] private AudioClip _crunchSound;
+    [SerializeField] private AudioClip _popSound;
 
     private void Awake()
     {
@@ -35,13 +36,16 @@ public sealed class UnitSound : MonoBehaviour, IUnitSound
 
     public void PlayInteractSound(UnitKind kind)
     {
-        Debug.Log("PlayInteractSound");
         switch (kind)
         {
             case UnitKind.Booster:
                 if (_interactSource == null) return;
                 _interactSource.PlayOneShot(_crunchSound);
-                Debug.Log("Play crunch");
+                break;
+
+            case UnitKind.Animal:
+                if (_interactSource == null) return;
+                _interactSource.PlayOneShot(_popSound);
                 break;
         }
     }

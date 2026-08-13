@@ -2542,6 +2542,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7674843133574612583, guid: 54268a2d2f75db94aa41a0daa7a44155, type: 3}
+      propertyPath: _popSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 06082ecf21fce9548a906d5945576593, type: 3}
+    - target: {fileID: 7674843133574612583, guid: 54268a2d2f75db94aa41a0daa7a44155, type: 3}
       propertyPath: _crunchSound
       value: 
       objectReference: {fileID: 8300000, guid: e2cb4d5b536679c4085b18c024ccd6e0, type: 3}

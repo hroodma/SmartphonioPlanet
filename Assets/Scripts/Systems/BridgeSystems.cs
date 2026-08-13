@@ -155,6 +155,8 @@ public sealed class InteractionSystem : ISystem
                 world.Player.SumBonusTime += animal.UnitBonusTime;
                 world.Player.Interactable = animal;
                 animal.IsCaughted = true;
+
+                world.Player.PlayPickupSound = true;
                 break;
 
             case IBooster booster:
@@ -257,6 +259,7 @@ public sealed class SoundSyncSystem : ISystem
         {
             if (bindings.Sounds.TryGetValue(world.Player.Data.Id, out IUnitSound playerSound))
             {
+                Debug.Log($"{world.Player.Interactable.Data.Kind}");
                 playerSound.PlayInteractSound(world.Player.Interactable.Data.Kind);
             }
 
