@@ -114,6 +114,8 @@ public sealed class InteractionSystem : ISystem
 
     public void Run(float dt)
     {
+        world.Player.IsInteract = false;
+
         if (world.Player == null || !world.Player.Data.Alive) return;
 
         int count = Physics.OverlapSphereNonAlloc(
@@ -144,15 +146,22 @@ public sealed class InteractionSystem : ISystem
         switch (interactable)
         {
             case IAnimal animal:
+                if (animal.IsCaughted) return;
+
                 world.Player.CaughtAnimals++;
                 world.Player.SumBonusTime += animal.UnitBonusTime;
                 animal.IsCaughted = true;
                 break;
 
             case IBooster booster:
+                if(booster.IsTaken) return;
+
                 booster.IsTaken = true;
                 break;
         }
+
+        world.Player.IsInteract = true;
+        Debug.Log($"{world.Player.IsInteract}");
     }
 }
 
@@ -175,7 +184,6 @@ public sealed class PlayerUISyncSystem : ISystem
     }
 }
 
-// ВЫХОД: погнать данные в Animator каждого юнита.
 public sealed class ViewSyncSystem : ISystem
 {
     private readonly World world;
@@ -189,12 +197,37 @@ public sealed class ViewSyncSystem : ISystem
 
     public void Run(float dt)
     {
-        foreach (KeyValuePair<int, IUnitView> kv in bindings.Views)
+        foreach (var kv in bindings.Views)
         {
-            if (world.Entities.TryGetValue(kv.Key, out IEntity e))
+            if (!world.Entities.TryGetValue(kv.Key, out IEntity entity))
+                continue;
+
+            // 1. Считаем скорость для Blend Tree
+            float normalizedSpeed = 0f;
+            if (entity is IMoveable moveable)
             {
-                kv.Value.Render(e);
+                Vector3 horizontal = Vector3.ProjectOnPlane(
+                    moveable.Movement.DesiredVelocity,
+                    moveable.Movement.UpDirection
+                );
+
+                if (moveable.Movement.MaxSpeed > 0f)
+                    normalizedSpeed = horizontal.magnitude / moveable.Movement.MaxSpeed;
+
+                if (normalizedSpeed < 0.01f)
+                    normalizedSpeed = 0f;
             }
+
+            // 2. Читаем И СРАЗУ ПОТРЕБЛЯЕМ флаг взаимодействия
+            bool shouldPlayInteract = false;
+            if (entity is IPlayer player && player.IsInteract)
+            {
+                shouldPlayInteract = true;
+                player.IsInteract = false; // ✅ Сбрасываем в C# системе, а не в MonoBehaviour!
+            }
+
+            // 3. Передаём готовые примитивы в тонкий адаптер
+            kv.Value.Render(normalizedSpeed, shouldPlayInteract);
         }
     }
 }
@@ -248,8 +281,6 @@ public sealed class BoosterSystem : ISystem
 
             if (!booster.IsTaken) continue;
 
-            Debug.Log("Ну бестер засчитывается");
-
             switch (booster)
             {
                 case ISpeedBooster speedBooster:
@@ -257,6 +288,8 @@ public sealed class BoosterSystem : ISystem
                     speedBoostTimer += speedBooster.Duration;
                     break;
             }
+
+            booster.IsTaken = false;
 
             sink.Respawn(booster.Data.Id);
         }

@@ -10,22 +10,17 @@ public class UnitView : MonoBehaviour, IUnitView
             _animator = GetComponentInChildren<Animator>();
     }
 
-    public void Render(IEntity entity)
+    public void Render(float normalizedSpeed, bool shouldPlayInteract)
     {
         if (_animator == null)
             return;
 
-        switch (entity)
+        _animator.SetFloat("Speed", normalizedSpeed);
+
+        if (shouldPlayInteract)
         {
-            case IMoveable moveable:
-                Vector3 horizontal = Vector3.ProjectOnPlane(moveable.Movement.DesiredVelocity, moveable.Movement.UpDirection) / moveable.Movement.MaxSpeed;
-                float speed = horizontal.magnitude;
-
-                if (speed < 0.01f)
-                    speed = 0f;
-
-                _animator.SetFloat("Speed", speed);
-                break;
+            _animator.ResetTrigger("Interact");
+            _animator.SetTrigger("Interact");
         }
     }
 }

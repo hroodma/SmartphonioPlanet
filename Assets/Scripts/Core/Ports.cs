@@ -10,7 +10,7 @@ public interface IBody
 
 public interface IUnitView
 {
-    void Render(IEntity entity);
+    void Render(float normalizedSpeed, bool shouldPlayInteract);
 }
 
 public interface IUnitSound

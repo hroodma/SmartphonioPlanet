@@ -32,6 +32,11 @@ public interface ICaughtable : IEntity
     bool IsCaughted { get; set; }
 }
 
+public interface IPlayer : IMoveable
+{
+    bool IsInteract { get; set; }
+}
+
 public interface IAnimal : IInteractable, ICaughtable, IMoveable
 {
     float UnitBonusTime { get; set; }
@@ -57,7 +62,7 @@ public sealed class UnitData
     public bool Alive = true;        
 }
 
-public sealed class PlayerData : IEntity, IMoveable
+public sealed class PlayerData : IPlayer
 {
     public UnitData Data { get; set; }
     public MovementData Movement { get; set; }
@@ -68,6 +73,8 @@ public sealed class PlayerData : IEntity, IMoveable
     public float MoveInput;
     public float TurnInput;
     public float InteractionRadius;
+
+    public bool IsInteract { get; set; }
 }
 
 public sealed class AnimalData : IAnimal
