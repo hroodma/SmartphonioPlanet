@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: HorseStats
   m_EditorClassIdentifier: Assembly-CSharp::AnimalStats
   maxSpeed: 6
-  moveSpeed: 4
+  defaultSpeed: 4
   acceleration: 5
   turnSpeed: 60
-  interactionRadius: 0.7
   unitBunusTime: 10
   detectionDistance: 12
   minDirectionDistance: 15

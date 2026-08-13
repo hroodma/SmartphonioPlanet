@@ -35,10 +35,6 @@ public sealed class Bootstrap : MonoBehaviour
         world.Planet.Radius = planet.radius;
         world.Planet.GravityStrength = GRAVITY_STRENGTH;
 
-        //world.Planet.Center = Vector3.zero;
-        //world.Planet.Radius = 25;
-        //world.Planet.GravityStrength = 200f;
-
         factory.Init(world, bindings);
 
         if (Application.platform == RuntimePlatform.Android ||
@@ -70,6 +66,7 @@ public sealed class Bootstrap : MonoBehaviour
             new PhysicsReadSystem(world, bindings),
             new PlanetGravitySystem(world),
             new InteractionSystem(world),
+            new BoosterSystem(world, factory),
             new MovementSystem(world),
             new AnimalMovementSystem(world),
             new CaughtSystem(world, factory),

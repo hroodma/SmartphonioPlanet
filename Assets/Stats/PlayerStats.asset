@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerStats
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxSpeed: 10
-  moveSpeed: 5
+  defaultSpeed: 5
   acceleration: 30
   turnSpeed: 60
   interactionRadius: 0.7

@@ -18,7 +18,7 @@ public class MovementStats : UnitStats
 {
     [Header("Speed")]
     public float maxSpeed;
-    public float moveSpeed;
+    public float defaultSpeed;
     public float acceleration;
     public float turnSpeed;
 }
@@ -43,4 +43,18 @@ public class PlayerStats : MovementStats
 {
     [Header("Interact")]
     public float interactionRadius = 0.7f;
+}
+
+[CreateAssetMenu(fileName = "Booster Stats", menuName = "UnitStats/Boosters")]
+public class BoosterStats : MovementStats
+{
+    [Header("Values")]
+    public float value = 10f;
+}
+
+[CreateAssetMenu(fileName = "Speed Booster Stats", menuName = "UnitStats/Boosters")]
+public class SpeedBoosterStats : BoosterStats
+{
+    [Header("Duration")]
+    public float duration = 10f;
 }

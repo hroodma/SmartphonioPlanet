@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SheepStats
   m_EditorClassIdentifier: Assembly-CSharp::AnimalStats
   maxSpeed: 4.5
-  moveSpeed: 3
+  defaultSpeed: 3
   acceleration: 5
   turnSpeed: 60
   unitBunusTime: 6

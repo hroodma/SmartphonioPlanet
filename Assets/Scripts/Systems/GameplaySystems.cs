@@ -37,7 +37,7 @@ public sealed class MovementSystem : ISystem
         }
         else
         {
-            targetVelocity = world.Player.Movement.Forward * world.Player.MoveInput * world.Player.Movement.MoveSpeed;
+            targetVelocity = world.Player.Movement.Forward * world.Player.MoveInput * world.Player.Movement.CurrentSpeed;
             targetVelocity = Vector3.ProjectOnPlane(targetVelocity, world.Player.Movement.UpDirection);
         }
 
@@ -125,7 +125,7 @@ public sealed class AnimalMovementSystem : ISystem
         }
         else
         {
-            Vector3 targetVelocity = animal.Movement.Forward * animal.Movement.MoveSpeed;
+            Vector3 targetVelocity = animal.Movement.Forward * animal.Movement.CurrentSpeed;
             targetVelocity = Vector3.ProjectOnPlane(targetVelocity, animal.Movement.UpDirection);
 
             animal.Movement.HorizontalVelocity = Vector3.MoveTowards(

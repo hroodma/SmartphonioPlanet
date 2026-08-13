@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: PigStats
   m_EditorClassIdentifier: Assembly-CSharp::AnimalStats
   maxSpeed: 4
-  moveSpeed: 2.67
+  defaultSpeed: 2.67
   acceleration: 5
   turnSpeed: 60
-  interactionRadius: 0.7
   unitBunusTime: 4
   detectionDistance: 8
   minDirectionDistance: 15

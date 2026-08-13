@@ -4,7 +4,8 @@ using UnityEngine;
 public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 {
     [Header("Wave count")]
-    [SerializeField] private int waveCount;
+    [SerializeField] private int animalEveryoneCount;
+    [SerializeField] private int speedBoosterCount;
 
     [Header("Animal prefabs")]
     [SerializeField] private GameObject rabbitPrefab;
@@ -13,12 +14,18 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
     [SerializeField] private GameObject cowPrefab;
     [SerializeField] private GameObject pigPrefab;
 
-    [Header("Animal stats (ScriptableObject)")]
+    [Header("Animal Animal stats (ScriptableObject)")]
     [SerializeField] private AnimalStats rabbitStats;
     [SerializeField] private AnimalStats sheepStats;
     [SerializeField] private AnimalStats horseStats;
     [SerializeField] private AnimalStats cowStats;
     [SerializeField] private AnimalStats pigStats;
+
+    [Header("Booster prefabs")]
+    [SerializeField] private GameObject speedBoosterPrefab;
+
+    [Header("Booster stats (ScriptableObject)")]
+    [SerializeField] private SpeedBoosterStats speedBoosterStats;
 
     private World world;
     private Bindings bindings;
@@ -50,14 +57,19 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 
     public void SpawnWave()
     {
-        for (int i = 0; i < waveCount; i++)
+        for (int i = 0; i < animalEveryoneCount; i++)
         {
             SpawnAnimal(rabbitPrefab, RandomPointOnSphere(), rabbitStats);
             SpawnAnimal(sheepPrefab, RandomPointOnSphere(), sheepStats);
             SpawnAnimal(horsePrefab, RandomPointOnSphere(), horseStats);
             SpawnAnimal(cowPrefab, RandomPointOnSphere(), cowStats);
-            SpawnAnimal(pigPrefab, RandomPointOnSphere(), pigStats);
+            SpawnAnimal(pigPrefab, RandomPointOnSphere(), pigStats);            
         }
+
+        for (int i = 0; i < speedBoosterCount; i++)
+        {
+            SpawnBooster(speedBoosterPrefab, RandomPointOnSphere(), speedBoosterStats);
+        }        
     }
 
     private void SpawnAnimal(GameObject prefab, Vector3 point, AnimalStats stats)
@@ -85,6 +97,31 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         RegisterBody(body, stats, UnitKind.Animal);
     }
 
+    private void SpawnBooster(GameObject prefab, Vector3 point, SpeedBoosterStats stats)
+    {
+        if (prefab == null || point == null)
+            return;
+
+        Vector3 upDir = (point - world.Planet.Center).normalized;
+        Vector3 randomForward = Vector3.ProjectOnPlane(Random.onUnitSphere, upDir).normalized;
+
+        if (randomForward.sqrMagnitude < 0.001f)
+            randomForward = Vector3.Cross(upDir, Vector3.right).normalized;
+
+        Quaternion startRotation = Quaternion.LookRotation(randomForward, upDir);
+
+        GameObject go = Instantiate(prefab, point, startRotation);
+
+        UnitBody body = go.GetComponent<UnitBody>();
+        if (body == null)
+            body = go.AddComponent<UnitBody>();
+
+        if (go.GetComponent<UnitView>() == null)
+            go.AddComponent<UnitView>();
+
+        RegisterBody(body, stats, UnitKind.Booster);
+    }
+
     public void Respawn(int id)
     {
         if (!world.Entities.TryGetValue(id, out IEntity e))
@@ -96,6 +133,12 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
             moveable.Movement.DesiredVelocity = Vector3.zero;
 
             MoveOnOtherPosition(moveable);
+        }
+
+        if (e is IBooster booster)
+        {
+            booster.IsTaken = false;
+            MoveOnOtherPosition(booster);
         }
     }
 
@@ -201,7 +244,8 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
             {
                 Position = pos,
                 MaxSpeed = movement.maxSpeed,
-                MoveSpeed = movement.moveSpeed,
+                DefaultSpeed = movement.defaultSpeed,
+                CurrentSpeed = movement.defaultSpeed,
                 Acceleration = movement.acceleration,
                 UpDirection = upDir,
                 Forward = forwardDir,
@@ -239,6 +283,17 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
                     InteractionRadius = playerStats.interactionRadius,
                     CaughtAnimals = 0,
                     SumBonusTime = 0f
+                };
+
+            case SpeedBoosterStats speedBoosterStats:
+                return new SpeedBoosterData
+                {
+                    Data = baseData,
+                    Movement = newMovementData,
+
+                    Value = speedBoosterStats.value,
+                    Duration = speedBoosterStats.duration,
+                    IsTaken = false
                 };
 
             default:

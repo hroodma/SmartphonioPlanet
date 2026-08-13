@@ -16,6 +16,17 @@ public interface IMoveable : IEntity
 
 public interface IInteractable : IEntity { }
 
+public interface IBooster : IInteractable, IMoveable
+{
+    float Value { get; set; }
+    bool IsTaken {  get; set; }
+}
+
+public interface ISpeedBooster : IBooster
+{
+    float Duration { get; set; }
+}
+
 public interface ICaughtable : IEntity
 {
     bool IsCaughted { get; set; }
@@ -35,7 +46,7 @@ public interface IAnimal : IInteractable, ICaughtable, IMoveable
     bool IsTurning { get; set; }
 }
 
-public enum UnitKind { Player, Animal }
+public enum UnitKind { Player, Animal, Booster}
 public enum AnimalTag { None, Rabbit, Cow, Pig, Sheep, Horse }
 
 public sealed class UnitData
@@ -79,6 +90,16 @@ public sealed class AnimalData : IAnimal
     public bool IsCaughted { get; set; }
 }
 
+public sealed class SpeedBoosterData : ISpeedBooster
+{
+    public UnitData Data { get; set; }
+    public MovementData Movement { get; set; }
+
+    public float Value { get; set; }
+    public float Duration { get; set; }
+    public bool IsTaken { get; set; }
+}
+
 public sealed class MovementData
 {
     public Vector3 Position;
@@ -90,7 +111,8 @@ public sealed class MovementData
     public Vector3 Right;
 
     public float MaxSpeed;
-    public float MoveSpeed;
+    public float DefaultSpeed;
+    public float CurrentSpeed;
     public float Acceleration;
     public Vector3 MoveDirection;
     public Vector3 UpDirection;
@@ -116,6 +138,7 @@ public sealed class World
     public readonly Dictionary<int, IEntity> Entities = new();
 
     public readonly Dictionary<int, AnimalData> Animals = new();
+    public readonly Dictionary<int, SpeedBoosterData> SpeedBoosters = new();
     public PlayerData Player;
 
     public readonly PlanetData Planet = new();
@@ -136,6 +159,9 @@ public sealed class World
             case AnimalData animalData:
                 Animals[animalData.Data.Id] = animalData;
                 break;
+            case SpeedBoosterData speedBoosterData:
+                SpeedBoosters[speedBoosterData.Data.Id] = speedBoosterData;
+                break;
         }
         return entity;
     }
@@ -154,6 +180,10 @@ public sealed class World
 
                 case AnimalData:
                     Animals.Remove(id);
+                    break;
+
+                case SpeedBoosterData:
+                    SpeedBoosters.Remove(id);
                     break;
             }
         }

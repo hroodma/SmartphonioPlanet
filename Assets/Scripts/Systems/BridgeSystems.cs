@@ -148,6 +148,10 @@ public sealed class InteractionSystem : ISystem
                 world.Player.SumBonusTime += animal.UnitBonusTime;
                 animal.IsCaughted = true;
                 break;
+
+            case IBooster booster:
+                booster.IsTaken = true;
+                break;
         }
     }
 }
@@ -215,12 +219,51 @@ public sealed class SoundSyncSystem : ISystem
             if (!(e is IMoveable moveable)) continue;
 
             Vector3 horizontal = Vector3.ProjectOnPlane(moveable.Movement.DesiredVelocity, moveable.Movement.UpDirection);
-            float speed = horizontal.magnitude / moveable.Movement.MoveSpeed;
+            float speed = horizontal.magnitude / moveable.Movement.CurrentSpeed;
 
             if (speed < 0.01f) speed = 0f;
 
             kv.Value.UpdateFootstepVolume(speed);
         }
+    }
+}
+
+public sealed class BoosterSystem : ISystem
+{
+    private readonly World world;
+    private readonly IUnitSink sink;
+    private float speedBoostTimer;
+
+    public BoosterSystem(World world, IUnitSink sink)
+    {
+        this.world = world;
+        this.sink = sink;
+    }
+
+    public void Run(float dt)
+    {
+        foreach (IEntity e in world.Entities.Values)
+        {
+            if (!(e is IBooster booster)) continue;
+
+            if (!booster.IsTaken) continue;
+
+            Debug.Log("Ну бестер засчитывается");
+
+            switch (booster)
+            {
+                case ISpeedBooster speedBooster:
+                    world.Player.Movement.CurrentSpeed = Mathf.Min(speedBooster.Value, world.Player.Movement.MaxSpeed);
+                    speedBoostTimer += speedBooster.Duration;
+                    break;
+            }
+
+            sink.Respawn(booster.Data.Id);
+        }
+
+        speedBoostTimer = Mathf.Max(0, speedBoostTimer - dt);
+
+        if (speedBoostTimer <= 0) world.Player.Movement.CurrentSpeed = world.Player.Movement.DefaultSpeed;
     }
 }
 
