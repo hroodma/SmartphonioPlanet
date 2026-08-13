@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animalEveryoneCount: 10
-  speedBoosterCount: 20
+  speedBoosterCount: 4
   rabbitPrefab: {fileID: 3762978145848300065, guid: 74fbd9e96607ddd4fbc7eae7ab4eecde, type: 3}
   sheepPrefab: {fileID: 3039049597304252175, guid: 5453e51292d42ee4299cfe308c53230f, type: 3}
   horsePrefab: {fileID: 1449787152747059316, guid: d8469a6bbd3f87e48aa56528a53f8e62, type: 3}
@@ -252,7 +252,7 @@ MonoBehaviour:
   horseStats: {fileID: 11400000, guid: d0c2120647285ff46b615939a4f05336, type: 2}
   cowStats: {fileID: 11400000, guid: e8d03a3d41900e749bf9cfa6f5ef837b, type: 2}
   pigStats: {fileID: 11400000, guid: def8410efa5441441a8586bef676bdc4, type: 2}
-  speedBoosterPrefab: {fileID: 2136671069616069566, guid: 9b53f911d8b51da4ca78ee8a32fe2537, type: 3}
+  speedBoosterPrefab: {fileID: 3192982623250956260, guid: 32b73ad311110a54db344f08595396d7, type: 3}
   speedBoosterStats: {fileID: 11400000, guid: ba478d5f1f5e187428943b85aff429e7, type: 2}
 --- !u!1 &271208203
 GameObject:
