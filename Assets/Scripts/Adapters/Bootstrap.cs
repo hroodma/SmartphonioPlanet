@@ -60,6 +60,7 @@ public sealed class Bootstrap : MonoBehaviour
         factory.SpawnWave();
 
         PhysicsWriteSystem write = new PhysicsWriteSystem(world, bindings);
+        IScoreRepository scoreRepository = new PlayerPrefsScoreRepository();
 
         ISystem[] fixedSystems =
         {
@@ -77,10 +78,10 @@ public sealed class Bootstrap : MonoBehaviour
         {
             new PlayerCommandSystem(world, bindings),
             new EndGameTimerSystem(world),
-            new PlayerUISyncSystem(world, bindings),
+            new PlayerUISyncSystem(world, bindings, scoreRepository),
             new ViewSyncSystem(world, bindings),
             new SoundSyncSystem(world, bindings),
-            new MatchEndView(world, bindings, gameResultUI)
+            new MatchEndView(world, bindings, gameResultUI, scoreRepository)
         };
 
         ISystem[] endedSystems =

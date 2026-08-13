@@ -1,5 +1,11 @@
 using UnityEngine;
 
+public interface IScoreRepository
+{
+    int GetHighScore();
+    void SaveHighScore(int score);
+}
+
 public interface IBody
 {
     Vector3 Position { get; }
@@ -25,7 +31,7 @@ public interface IPlayerInput
 
 public interface IPlayerUI
 {
-    void UpdateUI(PlayerData playerData, float timer);
+    void UpdateUI(PlayerData playerData, float timer, IScoreRepository scoreRepository);
 }
 
 public interface IUnitFactory

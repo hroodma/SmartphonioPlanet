@@ -169,18 +169,20 @@ public sealed class PlayerUISyncSystem : ISystem
 {
     private readonly World world;
     private readonly Bindings bindings;
+    private readonly IScoreRepository scoreRepository;
 
-    public PlayerUISyncSystem(World world, Bindings bindings)
+    public PlayerUISyncSystem(World world, Bindings bindings, IScoreRepository scoreRepository)
     {
         this.world = world;
         this.bindings = bindings;
+        this.scoreRepository = scoreRepository;
     }
 
     public void Run(float dt)
     {
         if (world.Player == null) return;
 
-        bindings.PlayerUI.UpdateUI(world.Player, world.Match.Timer);
+        bindings.PlayerUI.UpdateUI(world.Player, world.Match.Timer, scoreRepository);
     }
 }
 
@@ -202,7 +204,6 @@ public sealed class ViewSyncSystem : ISystem
             if (!world.Entities.TryGetValue(kv.Key, out IEntity entity))
                 continue;
 
-            // 1. Считаем скорость для Blend Tree
             float normalizedSpeed = 0f;
             if (entity is IMoveable moveable)
             {
@@ -218,15 +219,13 @@ public sealed class ViewSyncSystem : ISystem
                     normalizedSpeed = 0f;
             }
 
-            // 2. Читаем И СРАЗУ ПОТРЕБЛЯЕМ флаг взаимодействия
             bool shouldPlayInteract = false;
             if (entity is IPlayer player && player.IsInteract)
             {
                 shouldPlayInteract = true;
-                player.IsInteract = false; // ✅ Сбрасываем в C# системе, а не в MonoBehaviour!
+                player.IsInteract = false;
             }
 
-            // 3. Передаём готовые примитивы в тонкий адаптер
             kv.Value.Render(normalizedSpeed, shouldPlayInteract);
         }
     }
@@ -330,13 +329,15 @@ public sealed class MatchEndView : ISystem
     private readonly World world;
     private readonly Bindings bindings;
     private readonly GameResultUI ui;
+    private readonly IScoreRepository scoreRepository;
     private bool shown;
 
-    public MatchEndView(World world, Bindings bindings, GameResultUI ui)
+    public MatchEndView(World world, Bindings bindings, GameResultUI ui, IScoreRepository scoreRepository)
     {
         this.world = world;
         this.bindings = bindings;
         this.ui = ui;
+        this.scoreRepository = scoreRepository;
     }
 
     public void Run(float dt)
@@ -348,6 +349,12 @@ public sealed class MatchEndView : ISystem
 
         if (world.Player == null) return;
 
-        ui.ShowResult(world.Player.CaughtAnimals);
+        int currentScore = world.Player.CaughtAnimals;
+
+        scoreRepository.SaveHighScore(currentScore);
+
+        int highScore = scoreRepository.GetHighScore();
+
+        ui.ShowResult(currentScore, highScore);
     }
 }
