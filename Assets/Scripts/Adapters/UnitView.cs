@@ -10,12 +10,13 @@ public class UnitView : MonoBehaviour, IUnitView
             _animator = GetComponentInChildren<Animator>();
     }
 
-    public void Render(float normalizedSpeed, bool shouldPlayInteract)
+    public void Render(bool hasSpeed, float normalizedSpeed, bool shouldPlayInteract)
     {
         if (_animator == null)
             return;
 
-        _animator.SetFloat("Speed", normalizedSpeed);
+        if (hasSpeed)
+            _animator.SetFloat("Speed", normalizedSpeed);
 
         if (shouldPlayInteract)
         {

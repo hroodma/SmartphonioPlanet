@@ -6,9 +6,12 @@ public class PlanetValues : MonoBehaviour
     public Vector3 center;
     public float radius;
 
-    private void Awake()
+    public void GetPlanetData()
     {
-        center = _planet.transform.position;
-        radius = _planet.transform.localScale.x / 2;
+        if (_planet != null)
+        {
+            center = _planet.transform.position;
+            radius = _planet.transform.localScale.x / 2f;
+        }
     }
 }

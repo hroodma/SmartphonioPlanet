@@ -133,12 +133,12 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
             moveable.Movement.DesiredVelocity = Vector3.zero;
 
             MoveOnOtherPosition(moveable);
+            CorrectRotation(moveable);
         }
 
         if (e is IBooster booster)
         {
             booster.IsTaken = false;
-            MoveOnOtherPosition(booster);
         }
     }
 
@@ -164,6 +164,18 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         }
     }
 
+    private void CorrectRotation(IMoveable moveable)
+    {
+        if (bindings.Bodies.TryGetValue(moveable.Data.Id, out IBody body) && body is Component c)
+        {
+            Vector3 center = world.Planet.Center;
+            Vector3 up = moveable.Movement.Position - center;
+
+            c.transform.up = up;
+            moveable.Movement.UpDirection = up;
+        }
+    }
+
     private Vector3 RandomPointOnSphere()
     {
         if (world.Player == null)
@@ -172,6 +184,9 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         Vector3 playerPos = world.Player.Movement.Position;
         float radius = world.Planet.Radius;
         Vector3 center = world.Planet.Center;
+
+        Debug.Log($"{radius}");
+        Debug.Log($"{center}");
 
         const float requiredDistanceToPlayer = 20f;
         const float requiredDistanceToOtherAnimal = 2f;

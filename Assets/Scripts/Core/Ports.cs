@@ -16,7 +16,7 @@ public interface IBody
 
 public interface IUnitView
 {
-    void Render(float normalizedSpeed, bool shouldPlayInteract);
+    void Render(bool hasSpeed, float normalizedSpeed, bool shouldPlayInteract);
 }
 
 public interface IUnitSound

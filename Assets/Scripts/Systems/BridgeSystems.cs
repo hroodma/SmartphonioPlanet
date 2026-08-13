@@ -233,7 +233,9 @@ public sealed class ViewSyncSystem : ISystem
                 player.IsInteract = false;
             }
 
-            kv.Value.Render(normalizedSpeed, shouldPlayInteract);
+            bool hasSpeed = world.Entities.TryGetValue(kv.Key, out IEntity e) && !(e is IBooster);
+
+            kv.Value.Render(hasSpeed, normalizedSpeed, shouldPlayInteract);
         }
     }
 }
@@ -251,7 +253,6 @@ public sealed class SoundSyncSystem : ISystem
 
     public void Run(float dt)
     {
-        // 1. ✅ Обработка звука подбора (срабатывает только для игрока и только 1 раз)
         if (world.Player != null && world.Player.PlayPickupSound)
         {
             if (bindings.Sounds.TryGetValue(world.Player.Data.Id, out IUnitSound playerSound))
@@ -259,11 +260,9 @@ public sealed class SoundSyncSystem : ISystem
                 playerSound.PlayInteractSound(world.Player.Interactable.Data.Kind);
             }
 
-            // Сразу сбрасываем флаг, чтобы звук не зациклился
             world.Player.PlayPickupSound = false;
         }
 
-        // 2. ✅ Обновление громкости шагов для ВСЕХ движущихся сущностей
         foreach (KeyValuePair<int, IUnitSound> kv in bindings.Sounds)
         {
             if (!world.Entities.TryGetValue(kv.Key, out IEntity e)) continue;
@@ -343,6 +342,8 @@ public sealed class PhysicsWriteSystem : ISystem
             if (!world.Entities.TryGetValue(kv.Key, out IEntity e)) continue;
 
             if (!(e is IMoveable moveable)) continue;
+
+            if (e is IBooster) continue;
 
             kv.Value.Apply(moveable.Movement.DesiredVelocity, moveable.Movement.UpDirection, moveable.Movement.Forward);
         }

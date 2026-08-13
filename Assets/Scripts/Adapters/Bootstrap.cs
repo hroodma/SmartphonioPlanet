@@ -28,6 +28,8 @@ public sealed class Bootstrap : MonoBehaviour
         World world = new World();
         Bindings bindings = new Bindings();
 
+        planet.GetPlanetData();
+
         world.Match.Timer = startTimer;
         world.Match.Over = false;
 
