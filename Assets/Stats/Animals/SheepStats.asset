@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: SheepStats
   m_EditorClassIdentifier: Assembly-CSharp::AnimalStats
-  maxSpeed: 5
-  moveSpeed: 3.33
+  maxSpeed: 4.5
+  moveSpeed: 3
   acceleration: 5
   turnSpeed: 60
-  interactionRadius: 0.7
   unitBunusTime: 6
   detectionDistance: 10
   minDirectionDistance: 15

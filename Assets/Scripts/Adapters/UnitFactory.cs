@@ -31,7 +31,7 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
 
     public int RegisterBody(UnitBody body, UnitStats stats, UnitKind kind)
     {
-        IEntity entity = MakeEntity(stats, kind, body.Position);
+        IEntity entity = MakeEntity(stats, kind, body.Position, world.Planet);
         world.Add(entity);
 
         Tag(body.gameObject, entity.Data.Id);
@@ -65,7 +65,15 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         if (prefab == null || point == null)
             return;
 
-        GameObject go = Instantiate(prefab, point, Quaternion.identity);
+        Vector3 upDir = (point - world.Planet.Center).normalized;
+        Vector3 randomForward = Vector3.ProjectOnPlane(UnityEngine.Random.onUnitSphere, upDir).normalized;
+
+        if (randomForward.sqrMagnitude < 0.001f)
+            randomForward = Vector3.Cross(upDir, Vector3.right).normalized;
+
+        Quaternion startRotation = Quaternion.LookRotation(randomForward, upDir);
+
+        GameObject go = Instantiate(prefab, point, startRotation);
 
         UnitBody body = go.GetComponent<UnitBody>();
         if (body == null)
@@ -82,10 +90,13 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         if (!world.Entities.TryGetValue(id, out IEntity e))
             return;
 
-        e.Data.Alive = true;
-        e.Data.DesiredVelocity = Vector3.zero;
+        if (e is IMoveable moveable)
+        {
+            moveable.Data.Alive = true;
+            moveable.Movement.DesiredVelocity = Vector3.zero;
 
-        MoveOnOtherPosition(e);
+            MoveOnOtherPosition(moveable);
+        }
     }
 
     public void Uncaught(int id)
@@ -93,18 +104,20 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         if (world.Entities.TryGetValue(id, out IEntity e) && e is ICaughtable caughtable)
         {
             caughtable.IsCaughted = false;
-            MoveOnOtherPosition(caughtable);
+
+            if (caughtable is IMoveable moveable)
+                MoveOnOtherPosition(moveable);
         }
     }
 
-    private void MoveOnOtherPosition(IEntity entity)
+    private void MoveOnOtherPosition(IMoveable moveable)
     {
-        if (bindings.Bodies.TryGetValue(entity.Data.Id, out IBody body) && body is Component c)
+        if (bindings.Bodies.TryGetValue(moveable.Data.Id, out IBody body) && body is Component c)
         {
             Vector3 newRandomPoint = RandomPointOnSphere();
 
             c.transform.position = newRandomPoint;
-            entity.Data.Position = newRandomPoint;
+            moveable.Movement.Position = newRandomPoint;
         }
     }
 
@@ -113,7 +126,7 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         if (world.Player == null)
             return default;
 
-        Vector3 playerPos = world.Player.Data.Position;
+        Vector3 playerPos = world.Player.Movement.Position;
         float radius = world.Planet.Radius;
         Vector3 center = world.Planet.Center;
 
@@ -164,25 +177,47 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
         unit.Id = id;
     }
 
-    private static IEntity MakeEntity(UnitStats s, UnitKind kind, Vector3 pos)
+    private static IEntity MakeEntity(UnitStats s, UnitKind kind, Vector3 pos, PlanetData planet)
     {
-        Vector3 upDir = (pos - new Vector3(0, 0, 0)).normalized;
-
         UnitData baseData = new UnitData
         {
-            Kind = kind,
-            Position = pos,
-            MaxSpeed = s.maxSpeed,
-            MoveSpeed = s.moveSpeed,
-            Acceleration = s.acceleration
+            Kind = kind
         };
+        MovementData newMovementData = new();
+        
+        if (s is MovementStats movement)
+        {
+            Vector3 upDir = (pos - planet.Center).normalized;
+            Vector3 randomDir = Random.onUnitSphere;
+            Vector3 forwardDir = Vector3.ProjectOnPlane(randomDir, upDir).normalized;
+            if (forwardDir.sqrMagnitude < 0.001f)
+            {
+                forwardDir = Vector3.Cross(upDir, Vector3.right).normalized;
+            }
 
+            Vector3 rightDir = Vector3.Cross(upDir, forwardDir).normalized;
+
+            MovementData movementData = new MovementData
+            {
+                Position = pos,
+                MaxSpeed = movement.maxSpeed,
+                MoveSpeed = movement.moveSpeed,
+                Acceleration = movement.acceleration,
+                UpDirection = upDir,
+                Forward = forwardDir,
+                Right = rightDir
+            };
+
+            newMovementData = movementData;
+        }
+        
         switch (s)
         {
             case AnimalStats animalStats:
                 return new AnimalData
                 {
                     Data = baseData,
+                    Movement = newMovementData,
 
                     Tag = animalStats.tag,
                     UnitBonusTime = animalStats.unitBunusTime,
@@ -199,6 +234,7 @@ public class UnitFactory : MonoBehaviour, IUnitFactory, IUnitSink
                 return new PlayerData
                 {
                     Data = baseData,
+                    Movement = newMovementData,
 
                     InteractionRadius = playerStats.interactionRadius,
                     CaughtAnimals = 0,

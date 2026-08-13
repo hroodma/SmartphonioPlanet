@@ -19,9 +19,11 @@ public sealed class PhysicsReadSystem : ISystem
             if (!world.Entities.TryGetValue(kv.Key, out IEntity e))
                 continue;
 
-            e.Data.Position = kv.Value.Position;
-            e.Data.Forward = kv.Value.Forward;
-            e.Data.Right = kv.Value.Right;
+            if (!(e is IMoveable moveable)) continue;
+
+            moveable.Movement.Position = kv.Value.Position;
+            moveable.Movement.Forward = kv.Value.Forward;
+            moveable.Movement.Right = kv.Value.Right;
         }
     }
 }
@@ -86,13 +88,15 @@ public sealed class PlanetGravitySystem : ISystem
         {
             if (!e.Data.Alive) continue;
 
-            Vector3 toCenter = (world.Planet.Center - e.Data.Position).normalized;
+            if (!(e is IMoveable moveable)) continue;
 
-            e.Data.UpDirection = -toCenter;
+            Vector3 toCenter = (world.Planet.Center - moveable.Movement.Position).normalized;
 
-            e.Data.MoveDirection = Vector3.ProjectOnPlane(e.Data.MoveDirection, e.Data.UpDirection);
+            moveable.Movement.UpDirection = -toCenter;
 
-            e.Data.VerticalVelocity = -e.Data.UpDirection * world.Planet.GravityStrength * dt;
+            moveable.Movement.MoveDirection = Vector3.ProjectOnPlane(moveable.Movement.MoveDirection, moveable.Movement.UpDirection);
+
+            moveable.Movement.VerticalVelocity = -moveable.Movement.UpDirection * world.Planet.GravityStrength * dt;
         }
     }
 }
@@ -113,7 +117,7 @@ public sealed class InteractionSystem : ISystem
         if (world.Player == null || !world.Player.Data.Alive) return;
 
         int count = Physics.OverlapSphereNonAlloc(
-                world.Player.Data.Position,
+                world.Player.Movement.Position,
                 world.Player.InteractionRadius,
                 _buffer,
                 LayerMask.GetMask("Interactable")
@@ -185,7 +189,7 @@ public sealed class ViewSyncSystem : ISystem
         {
             if (world.Entities.TryGetValue(kv.Key, out IEntity e))
             {
-                kv.Value.Render(e.Data);
+                kv.Value.Render(e);
             }
         }
     }
@@ -206,13 +210,12 @@ public sealed class SoundSyncSystem : ISystem
     {
         foreach (KeyValuePair<int, IUnitSound> kv in bindings.Sounds)
         {
-            if (!world.Entities.TryGetValue(kv.Key, out IEntity e))
-            {
-                continue;
-            }
+            if (!world.Entities.TryGetValue(kv.Key, out IEntity e)) continue;
 
-            Vector3 horizontal = Vector3.ProjectOnPlane(e.Data.DesiredVelocity, e.Data.UpDirection);
-            float speed = horizontal.magnitude / e.Data.MoveSpeed;
+            if (!(e is IMoveable moveable)) continue;
+
+            Vector3 horizontal = Vector3.ProjectOnPlane(moveable.Movement.DesiredVelocity, moveable.Movement.UpDirection);
+            float speed = horizontal.magnitude / moveable.Movement.MoveSpeed;
 
             if (speed < 0.01f) speed = 0f;
 
@@ -237,10 +240,11 @@ public sealed class PhysicsWriteSystem : ISystem
     {
         foreach (KeyValuePair<int, IBody> kv in bindings.Bodies)
         {
-            if (!world.Entities.TryGetValue(kv.Key, out IEntity e))
-                continue;
+            if (!world.Entities.TryGetValue(kv.Key, out IEntity e)) continue;
 
-            kv.Value.Apply(e.Data.DesiredVelocity, e.Data.UpDirection, e.Data.Forward);
+            if (!(e is IMoveable moveable)) continue;
+
+            kv.Value.Apply(moveable.Movement.DesiredVelocity, moveable.Movement.UpDirection, moveable.Movement.Forward);
         }
     }
 }

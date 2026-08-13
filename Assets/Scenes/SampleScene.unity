@@ -424,6 +424,7 @@ MonoBehaviour:
   gameResultUI: {fileID: 466474331}
   startTimer: 90
   playerBody: {fileID: 1692014995}
+  planet: {fileID: 1826550290}
   playerStats: {fileID: 11400000, guid: bb6172cde7df35742a1851562cacc393, type: 2}
 --- !u!4 &283062059
 Transform:
@@ -1786,6 +1787,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3165254216246403376, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
   m_PrefabInstance: {fileID: 3977264488397178033}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1826550290 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2807264251585883695, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
+  m_PrefabInstance: {fileID: 3977264488397178033}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b425c0e31c8d87b4badf41d5bfcd3e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2002770240
 GameObject:
   m_ObjectHideFlags: 0
@@ -2528,26 +2540,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 901162234}
     m_Modifications:
-    - target: {fileID: 1744564532028785841, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
-      propertyPath: grassCount
-      value: 300000
-      objectReference: {fileID: 0}
-    - target: {fileID: 1744564532028785841, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
-      propertyPath: grassWidth
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1744564532028785841, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
-      propertyPath: grassHeight
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1951202207822617341, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
-      propertyPath: m_Name
-      value: Planet
-      objectReference: {fileID: 0}
-    - target: {fileID: 2803877323510615437, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: bd976345438e8024fa186b463e892820, type: 2}
     - target: {fileID: 3165254216246403376, guid: 7fc2dcf7693bb24428a4019abb23d608, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

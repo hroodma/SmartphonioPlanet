@@ -10,17 +10,22 @@ public class UnitView : MonoBehaviour, IUnitView
             _animator = GetComponentInChildren<Animator>();
     }
 
-    public void Render(UnitData data)
+    public void Render(IEntity entity)
     {
         if (_animator == null)
             return;
 
-        Vector3 horizontal = Vector3.ProjectOnPlane(data.DesiredVelocity, data.UpDirection) / data.MaxSpeed;
-        float speed = horizontal.magnitude;
+        switch (entity)
+        {
+            case IMoveable moveable:
+                Vector3 horizontal = Vector3.ProjectOnPlane(moveable.Movement.DesiredVelocity, moveable.Movement.UpDirection) / moveable.Movement.MaxSpeed;
+                float speed = horizontal.magnitude;
 
-        if (speed < 0.01f)
-            speed = 0f;
+                if (speed < 0.01f)
+                    speed = 0f;
 
-        _animator.SetFloat("Speed", speed);
+                _animator.SetFloat("Speed", speed);
+                break;
+        }
     }
 }

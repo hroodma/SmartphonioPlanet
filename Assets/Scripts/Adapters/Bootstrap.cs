@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public sealed class Bootstrap : MonoBehaviour
 {
+    public const float GRAVITY_STRENGTH = 200f;
+
     [Header("Wiring")]
     [SerializeField] private GameLoop loop;
     [SerializeField] private UnitFactory factory;
@@ -15,6 +17,9 @@ public sealed class Bootstrap : MonoBehaviour
     [Header("Placed units")]
     [SerializeField] private UnitBody playerBody;
 
+    [Header("Planet")]
+    [SerializeField] private PlanetValues planet;
+
     [Header("Stats (ScriptableObject)")]
     [SerializeField] private PlayerStats playerStats;
 
@@ -22,8 +27,17 @@ public sealed class Bootstrap : MonoBehaviour
     {
         World world = new World();
         Bindings bindings = new Bindings();
+
         world.Match.Timer = startTimer;
         world.Match.Over = false;
+
+        world.Planet.Center = planet.center;
+        world.Planet.Radius = planet.radius;
+        world.Planet.GravityStrength = GRAVITY_STRENGTH;
+
+        //world.Planet.Center = Vector3.zero;
+        //world.Planet.Radius = 25;
+        //world.Planet.GravityStrength = 200f;
 
         factory.Init(world, bindings);
 
@@ -42,11 +56,6 @@ public sealed class Bootstrap : MonoBehaviour
         }
 
         bindings.PlayerUI = playerUI;
-
-        // TECT TECT TECT TECT TECT TECT TECT TECT TECT TECT
-        world.Planet.Center = Vector3.zero;
-        world.Planet.GravityStrength = 200f;
-        world.Planet.Radius = 25;
 
         // Усыновляем то, что уже расставлено в сцене.
         if (playerBody != null)

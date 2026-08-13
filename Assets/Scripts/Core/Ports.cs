@@ -10,7 +10,7 @@ public interface IBody
 
 public interface IUnitView
 {
-    void Render(UnitData data);
+    void Render(IEntity entity);
 }
 
 public interface IUnitSound

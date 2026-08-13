@@ -9,6 +9,11 @@ public interface IEntity
     UnitData Data { get; }
 }
 
+public interface IMoveable : IEntity
+{
+    MovementData Movement { get; set; }
+}
+
 public interface IInteractable : IEntity { }
 
 public interface ICaughtable : IEntity
@@ -16,7 +21,7 @@ public interface ICaughtable : IEntity
     bool IsCaughted { get; set; }
 }
 
-public interface IAnimal : IInteractable, ICaughtable
+public interface IAnimal : IInteractable, ICaughtable, IMoveable
 {
     float UnitBonusTime { get; set; }
 
@@ -33,14 +38,49 @@ public interface IAnimal : IInteractable, ICaughtable
 public enum UnitKind { Player, Animal }
 public enum AnimalTag { None, Rabbit, Cow, Pig, Sheep, Horse }
 
-// НУЖНО БУДЕТ РАЗДЕЛИТЬ ДЛЯ Player и Animal
 public sealed class UnitData
 {
     public int Id;
     public UnitKind Kind;
 
-    public bool Alive = true;
+    public bool Alive = true;        
+}
 
+public sealed class PlayerData : IEntity, IMoveable
+{
+    public UnitData Data { get; set; }
+    public MovementData Movement { get; set; }
+
+    public float SumBonusTime;
+    public int CaughtAnimals;
+
+    public float MoveInput;
+    public float TurnInput;
+    public float InteractionRadius;
+}
+
+public sealed class AnimalData : IAnimal
+{
+    public UnitData Data { get; set; }
+    public MovementData Movement { get; set; }
+
+    public AnimalTag Tag;
+
+    public float DetectionDistance { get; set; }
+    public float MinDirectionDistance { get; set; }
+    public float MaxDirectionDistance { get; set; }
+    public float CurrentWalkDistance { get; set; }
+    public float TargetWalkDistance { get; set; }
+    public Vector3 TargetForward { get; set; }
+
+    public float UnitBonusTime { get; set; }
+
+    public bool IsTurning { get; set; }
+    public bool IsCaughted { get; set; }
+}
+
+public sealed class MovementData
+{
     public Vector3 Position;
     public Vector3 HorizontalVelocity;
     public Vector3 VerticalVelocity;
@@ -56,37 +96,6 @@ public sealed class UnitData
     public Vector3 UpDirection;
 
     public float TurnSpeed = 60f;
-}
-
-public sealed class PlayerData : IEntity
-{
-    public UnitData Data { get; set; }
-
-    public float SumBonusTime;
-    public int CaughtAnimals;
-
-    public float MoveInput;
-    public float TurnInput;
-    public float InteractionRadius;
-}
-
-public sealed class AnimalData : IAnimal
-{
-    public UnitData Data { get; set; }
-
-    public AnimalTag Tag;
-
-    public float DetectionDistance { get; set; }
-    public float MinDirectionDistance { get; set; }
-    public float MaxDirectionDistance { get; set; }
-    public float CurrentWalkDistance { get; set; }
-    public float TargetWalkDistance { get; set; }
-    public Vector3 TargetForward { get; set; }
-
-    public float UnitBonusTime { get; set; }
-
-    public bool IsTurning { get; set; }
-    public bool IsCaughted { get; set; }
 }
 
 public sealed class PlanetData
@@ -113,25 +122,6 @@ public sealed class World
     public readonly MatchState Match = new();
 
     private int nextId = 1;
-
-    //public IEntity Add(IEntity entity)
-    //{
-    //    entity.Data.Id = nextId++;
-    //    Entities[entity.Data.Id] = entity;
-
-    //    switch (entity)
-    //    {
-    //        case PlayerData playerData:
-    //            Player = playerData;
-    //            break;
-
-    //        case AnimalData animalData:
-    //            Animals[animalData.Data.Id] = animalData;
-    //            break;
-    //    }
-
-    //    return entity;
-    //}
 
     public T Add<T>(T entity) where T : IEntity
     {

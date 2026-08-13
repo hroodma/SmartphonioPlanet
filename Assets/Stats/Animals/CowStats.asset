@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: CowStats
   m_EditorClassIdentifier: Assembly-CSharp::AnimalStats
-  maxSpeed: 3
-  moveSpeed: 2
+  maxSpeed: 4
+  moveSpeed: 2.67
   acceleration: 5
   turnSpeed: 60
-  interactionRadius: 0.7
   unitBunusTime: 2
   detectionDistance: 8
   minDirectionDistance: 15

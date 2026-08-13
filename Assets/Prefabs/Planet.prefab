@@ -117,6 +117,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3165254216246403376}
+  - component: {fileID: 2807264251585883695}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -141,6 +142,21 @@ Transform:
   - {fileID: 5024417294680126242}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2807264251585883695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8930386073412926805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b425c0e31c8d87b4badf41d5bfcd3e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _planet: {fileID: 1951202207822617341}
+  center: {x: 0, y: 0, z: 0}
+  radius: 0
 --- !u!1 &8977369051358886532
 GameObject:
   m_ObjectHideFlags: 0

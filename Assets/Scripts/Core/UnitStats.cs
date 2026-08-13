@@ -3,7 +3,20 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Unit Stats", menuName = "UnitStats")]
 public class UnitStats : ScriptableObject
 {
-    [Header ("Speed")]
+    
+}
+
+[CreateAssetMenu(fileName = "Booster Stats", menuName = "UnitStats/Boosters")]
+public class SpeedBoostStats : UnitStats
+{
+    public float speedBoostValue;
+    public float duration;
+}
+
+[CreateAssetMenu(fileName = "Movement Stats", menuName = "UnitStats")]
+public class MovementStats : UnitStats
+{
+    [Header("Speed")]
     public float maxSpeed;
     public float moveSpeed;
     public float acceleration;
@@ -11,7 +24,7 @@ public class UnitStats : ScriptableObject
 }
 
 [CreateAssetMenu(fileName = "Animal Stats", menuName = "UnitStats/Animals")]
-public class AnimalStats : UnitStats
+public class AnimalStats : MovementStats
 {
     [Header ("Bonus")]
     public float unitBunusTime = 3f;
@@ -26,7 +39,7 @@ public class AnimalStats : UnitStats
 }
 
 [CreateAssetMenu(fileName = "Player Stats", menuName = "UnitStats/Player")]
-public class PlayerStats : UnitStats
+public class PlayerStats : MovementStats
 {
     [Header("Interact")]
     public float interactionRadius = 0.7f;
