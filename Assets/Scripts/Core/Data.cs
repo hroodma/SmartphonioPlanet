@@ -4,6 +4,32 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public interface IEntity
+{
+    UnitData Data { get; }
+}
+
+public interface IInteractable : IEntity { }
+
+public interface ICaughtable : IEntity
+{
+    bool IsCaughted { get; set; }
+}
+
+public interface IAnimal : IInteractable, ICaughtable
+{
+    float UnitBonusTime { get; set; }
+
+    float DetectionDistance { get; set; }
+    float MinDirectionDistance { get; set; }
+    float MaxDirectionDistance { get; set; }
+    float CurrentWalkDistance { get; set; }
+    float TargetWalkDistance { get; set; }
+    Vector3 TargetForward { get; set; }
+
+    bool IsTurning { get; set; }
+}
+
 public enum UnitKind { Player, Animal }
 public enum AnimalTag { None, Rabbit, Cow, Pig, Sheep, Horse }
 
@@ -12,7 +38,6 @@ public sealed class UnitData
 {
     public int Id;
     public UnitKind Kind;
-    public AnimalTag Tag;
 
     public bool Alive = true;
 
@@ -30,25 +55,38 @@ public sealed class UnitData
     public Vector3 MoveDirection;
     public Vector3 UpDirection;
 
-    public float MoveInput;
-    public float TurnInput;
     public float TurnSpeed = 60f;
-    public float InteractionRadius;
+}
 
-    // только для Animal
-    public float DetecionDistance;
-    public float FleeSpeed;
-    public float MinDirectionDistance;
-    public float MaxDirectionDistance;
-    public float CurrentWalkDistance;
-    public float TargetWalkDistance;
-    public Vector3 TargetForward;
-    public bool IsTurning;
-    public float UnitBonusTime;
-
+public sealed class PlayerData : IEntity
+{
+    public UnitData Data { get; set; }
 
     public float SumBonusTime;
     public int CaughtAnimals;
+
+    public float MoveInput;
+    public float TurnInput;
+    public float InteractionRadius;
+}
+
+public sealed class AnimalData : IAnimal
+{
+    public UnitData Data { get; set; }
+
+    public AnimalTag Tag;
+
+    public float DetectionDistance { get; set; }
+    public float MinDirectionDistance { get; set; }
+    public float MaxDirectionDistance { get; set; }
+    public float CurrentWalkDistance { get; set; }
+    public float TargetWalkDistance { get; set; }
+    public Vector3 TargetForward { get; set; }
+
+    public float UnitBonusTime { get; set; }
+
+    public bool IsTurning { get; set; }
+    public bool IsCaughted { get; set; }
 }
 
 public sealed class PlanetData
@@ -66,22 +104,69 @@ public sealed class MatchState
 
 public sealed class World
 {
-    public readonly Dictionary<int, UnitData> Units = new Dictionary<int, UnitData>();
-    public readonly PlanetData Planet = new PlanetData();
-    public readonly MatchState Match = new MatchState();
+    public readonly Dictionary<int, IEntity> Entities = new();
+
+    public readonly Dictionary<int, AnimalData> Animals = new();
+    public PlayerData Player;
+
+    public readonly PlanetData Planet = new();
+    public readonly MatchState Match = new();
 
     private int nextId = 1;
 
-    public UnitData Add(UnitData unit)
+    //public IEntity Add(IEntity entity)
+    //{
+    //    entity.Data.Id = nextId++;
+    //    Entities[entity.Data.Id] = entity;
+
+    //    switch (entity)
+    //    {
+    //        case PlayerData playerData:
+    //            Player = playerData;
+    //            break;
+
+    //        case AnimalData animalData:
+    //            Animals[animalData.Data.Id] = animalData;
+    //            break;
+    //    }
+
+    //    return entity;
+    //}
+
+    public T Add<T>(T entity) where T : IEntity
     {
-        unit.Id = nextId++;
-        Units[unit.Id] = unit;
-        return unit;
+        entity.Data.Id = nextId++;
+        Entities[entity.Data.Id] = entity;
+
+        switch (entity)
+        {
+            case PlayerData playerData:
+                Player = playerData;
+                break;
+            case AnimalData animalData:
+                Animals[animalData.Data.Id] = animalData;
+                break;
+        }
+        return entity;
     }
 
     public void Remove(int id)
     {
-        Units.Remove(id);
+        if (Entities.TryGetValue(id, out IEntity entity))
+        {
+            Entities.Remove(id);
+
+            switch (entity)
+            {
+                case PlayerData:
+                    Player = null;
+                    break;
+
+                case AnimalData:
+                    Animals.Remove(id);
+                    break;
+            }
+        }
     }
 }
 

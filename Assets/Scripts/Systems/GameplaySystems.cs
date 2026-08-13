@@ -12,162 +12,154 @@ public sealed class MovementSystem : ISystem
 
     public void Run(float dt)
     {
-        foreach (UnitData u in world.Units.Values)
+        if (world.Player == null || !world.Player.Data.Alive) return;
+
+        if (Mathf.Abs(world.Player.TurnInput) > 0.01f)
         {
-            if (!u.Alive) continue;
-            
-            if (u.Kind == UnitKind.Player)
-            {
-                if (Mathf.Abs(u.TurnInput) > 0.01f)
-                {
-                    float turnAngle = u.TurnSpeed * u.TurnInput * dt;
-                    Quaternion turnRotation = Quaternion.AngleAxis(turnAngle, u.UpDirection);
-                    u.Forward = turnRotation * u.Forward;
-                }
-
-                u.Forward = Vector3.ProjectOnPlane(u.Forward, u.UpDirection);
-                if (u.Forward.sqrMagnitude < 0.001f)
-                {
-                    u.Forward = Vector3.ProjectOnPlane(u.Right, u.UpDirection);
-                }
-                u.Forward.Normalize();
-
-                u.Right = Vector3.Cross(u.UpDirection, u.Forward).normalized;
-
-                Vector3 targetVelocity;
-                if (Mathf.Abs(u.MoveInput) < 0.01f)
-                {
-                    targetVelocity = Vector3.zero;
-                }
-                else
-                {
-                    targetVelocity = u.Forward * u.MoveInput * u.MoveSpeed;
-                    targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
-                }
-
-                float accel = Mathf.Abs(u.MoveInput) < 0.01f
-                    ? u.Acceleration * 2f
-                    : u.Acceleration;
-
-                u.HorizontalVelocity = Vector3.MoveTowards(
-                    u.HorizontalVelocity,
-                    targetVelocity,
-                    accel * dt
-                );
-            }
-
-            u.DesiredVelocity = u.HorizontalVelocity + u.VerticalVelocity;
+            float turnAngle = world.Player.Data.TurnSpeed * world.Player.TurnInput * dt;
+            Quaternion turnRotation = Quaternion.AngleAxis(turnAngle, world.Player.Data.UpDirection);
+            world.Player.Data.Forward = turnRotation * world.Player.Data.Forward;
         }
+
+        world.Player.Data.Forward = Vector3.ProjectOnPlane(world.Player.Data.Forward, world.Player.Data.UpDirection);
+        if (world.Player.Data.Forward.sqrMagnitude < 0.001f)
+        {
+            world.Player.Data.Forward = Vector3.ProjectOnPlane(world.Player.Data.Right, world.Player.Data.UpDirection);
+        }
+        world.Player.Data.Forward.Normalize();
+
+        world.Player.Data.Right = Vector3.Cross(world.Player.Data.UpDirection, world.Player.Data.Forward).normalized;
+
+        Vector3 targetVelocity;
+        if (Mathf.Abs(world.Player.MoveInput) < 0.01f)
+        {
+            targetVelocity = Vector3.zero;
+        }
+        else
+        {
+            targetVelocity = world.Player.Data.Forward * world.Player.MoveInput * world.Player.Data.MoveSpeed;
+            targetVelocity = Vector3.ProjectOnPlane(targetVelocity, world.Player.Data.UpDirection);
+        }
+
+        float accel = Mathf.Abs(world.Player.MoveInput) < 0.01f
+            ? world.Player.Data.Acceleration * 2f
+            : world.Player.Data.Acceleration;
+
+        world.Player.Data.HorizontalVelocity = Vector3.MoveTowards(
+            world.Player.Data.HorizontalVelocity,
+            targetVelocity,
+            accel * dt
+        );
+
+        world.Player.Data.DesiredVelocity = world.Player.Data.HorizontalVelocity + world.Player.Data.VerticalVelocity;
     }
 }
 
 public sealed class AnimalMovementSystem : ISystem
 {
     private readonly World world;
-    private readonly Bindings bindings;
 
-    public AnimalMovementSystem(World world, Bindings bindings)
+    public AnimalMovementSystem(World world)
     {
         this.world = world;
-        this.bindings = bindings;
     }
 
     public void Run(float dt)
     {
-        Vector3 playerPosition = new Vector3();
+        if (world.Player == null) return;
 
-        if (world.Units.TryGetValue(bindings.PlayerId, out UnitData playerData))
-            playerPosition = playerData.Position;
+        Vector3 playerPosition = new();
 
-        foreach (UnitData u in world.Units.Values)
+        playerPosition = world.Player.Data.Position;
+
+        foreach (IAnimal animal in world.Animals.Values)
         {
-            if (!u.Alive) continue;
+            if (!animal.Data.Alive) continue;
 
-            if (u.Kind == UnitKind.Animal)
-            {
-                Vector3 toPlayer = playerPosition - u.Position;
+            Vector3 toPlayer = playerPosition - animal.Data.Position;
 
-                if (Vector3.Distance(u.Position, playerPosition) < u.DetecionDistance)
-                    RunningLogic(toPlayer, u, dt);
-                else
-                    WanderingLogic(u, dt);
-            }
+            if (Vector3.Distance(animal.Data.Position, playerPosition) < animal.DetectionDistance)
+                RunningLogic(toPlayer, animal, dt);
+            else
+                WanderingLogic(animal, dt);
+
+            animal.Data.DesiredVelocity = animal.Data.HorizontalVelocity + animal.Data.VerticalVelocity;
         }        
     }
 
-    public void WanderingLogic(UnitData u, float dt)
+    public void WanderingLogic(IAnimal animal, float dt)
     {
-        if (!u.IsTurning)
+        if (!animal.IsTurning)
         {
-            float distanceMoved = u.HorizontalVelocity.magnitude * dt;
-            u.CurrentWalkDistance += distanceMoved;
+            float distanceMoved = animal.Data.HorizontalVelocity.magnitude * dt;
+            animal.CurrentWalkDistance += distanceMoved;
 
-            if (u.CurrentWalkDistance >= u.TargetWalkDistance)
+            if (animal.CurrentWalkDistance >= animal.TargetWalkDistance)
             {
-                u.IsTurning = true;
-                u.CurrentWalkDistance = 0f;
-                u.HorizontalVelocity = Vector3.zero;
+                animal.IsTurning = true;
+                animal.CurrentWalkDistance = 0f;
+                animal.Data.HorizontalVelocity = Vector3.zero;
 
                 float randomAngle = Random.Range(-130f, 130f);
 
-                Quaternion turnRot = Quaternion.AngleAxis(randomAngle, u.UpDirection);
-                u.TargetForward = Vector3.ProjectOnPlane(turnRot * u.Forward, u.UpDirection).normalized;
+                Quaternion turnRot = Quaternion.AngleAxis(randomAngle, animal.Data.UpDirection);
+                animal.TargetForward = Vector3.ProjectOnPlane(turnRot * animal.Data.Forward, animal.Data.UpDirection).normalized;
             }
         }
 
-        if (u.IsTurning)
+        if (animal.IsTurning)
         {
-            Quaternion currentRot = Quaternion.LookRotation(u.Forward, u.UpDirection);
-            Quaternion targetRot = Quaternion.LookRotation(u.TargetForward, u.UpDirection);
+            Quaternion currentRot = Quaternion.LookRotation(animal.Data.Forward, animal.Data.UpDirection);
+            Quaternion targetRot = Quaternion.LookRotation(animal.TargetForward, animal.Data.UpDirection);
 
-            Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, u.TurnSpeed * dt);
-            u.Forward = newRot * Vector3.forward;
+            Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, animal.Data.TurnSpeed * dt);
+            animal.Data.Forward = newRot * Vector3.forward;
 
-            if (Vector3.Dot(u.Forward, u.TargetForward) > 0.999f)
+            if (Vector3.Dot(animal.Data.Forward, animal.TargetForward) > 0.999f)
             {
-                u.Forward = u.TargetForward;
-                u.IsTurning = false;
+                animal.Data.Forward = animal.TargetForward;
+                animal.IsTurning = false;
 
-                u.TargetWalkDistance = Random.Range(u.MinDirectionDistance, u.MaxDirectionDistance);
+                animal.TargetWalkDistance = Random.Range(animal.MinDirectionDistance, animal.MaxDirectionDistance);
             }
         }
         else
         {
-            Vector3 targetVelocity = u.Forward * u.MoveSpeed;
-            targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
+            Vector3 targetVelocity = animal.Data.Forward * animal.Data.MoveSpeed;
+            targetVelocity = Vector3.ProjectOnPlane(targetVelocity, animal.Data.UpDirection);
 
-            u.HorizontalVelocity = Vector3.MoveTowards(
-                u.HorizontalVelocity,
+            animal.Data.HorizontalVelocity = Vector3.MoveTowards(
+                animal.Data.HorizontalVelocity,
                 targetVelocity,
-                u.Acceleration * dt
+                animal.Data.Acceleration * dt
             );
         }
     }
     
-    public void RunningLogic(Vector3 toPlayer, UnitData u, float dt)
+    public void RunningLogic(Vector3 toPlayer, IAnimal animal, float dt)
     {
         Vector3 fleeDirection = -toPlayer.normalized;
 
-        fleeDirection = Vector3.ProjectOnPlane(fleeDirection, u.UpDirection).normalized;
+        fleeDirection = Vector3.ProjectOnPlane(fleeDirection, animal.Data.UpDirection).normalized;
 
         if (fleeDirection.sqrMagnitude < 0.001f)
         {
-            fleeDirection = Vector3.Cross(u.UpDirection, Vector3.right).normalized;
+            fleeDirection = Vector3.Cross(animal.Data.UpDirection, Vector3.right).normalized;
         }
 
-        Quaternion currentRot = Quaternion.LookRotation(u.Forward, u.UpDirection);
-        Quaternion fleeRot = Quaternion.LookRotation(fleeDirection, u.UpDirection);
+        Quaternion currentRot = Quaternion.LookRotation(animal.Data.Forward, animal.Data.UpDirection);
+        Quaternion fleeRot = Quaternion.LookRotation(fleeDirection, animal.Data.UpDirection);
 
-        Quaternion newRot = Quaternion.RotateTowards(currentRot, fleeRot, u.TurnSpeed * 3f * dt);
-        u.Forward = newRot * Vector3.forward;
+        Quaternion newRot = Quaternion.RotateTowards(currentRot, fleeRot, animal.Data.TurnSpeed * 3f * dt);
+        animal.Data.Forward = newRot * Vector3.forward;
 
-        Vector3 targetVelocity = u.Forward * u.MaxSpeed;
-        targetVelocity = Vector3.ProjectOnPlane(targetVelocity, u.UpDirection);
+        Vector3 targetVelocity = animal.Data.Forward * animal.Data.MaxSpeed;
+        targetVelocity = Vector3.ProjectOnPlane(targetVelocity, animal.Data.UpDirection);
 
-        u.HorizontalVelocity = Vector3.MoveTowards(
-            u.HorizontalVelocity,
+        animal.Data.HorizontalVelocity = Vector3.MoveTowards(
+            animal.Data.HorizontalVelocity,
             targetVelocity,
-            u.Acceleration * dt
+            animal.Data.Acceleration * dt
         );
     }
 }
@@ -176,7 +168,7 @@ public sealed class CaughtSystem : ISystem
 {
     private readonly World world;
     private readonly IUnitSink sink;
-    private readonly List<int> caught = new List<int>();
+    private readonly List<int> caughtIds = new List<int>();
 
     public CaughtSystem(World world, IUnitSink sink)
     {
@@ -186,25 +178,19 @@ public sealed class CaughtSystem : ISystem
 
     public void Run(float dt)
     {
-        caught.Clear();
-        foreach (UnitData u in world.Units.Values)
-            if (!u.Alive)
-                caught.Add(u.Id);
+        caughtIds.Clear();
 
-        foreach (int id in caught)
+        foreach (IEntity e in world.Entities.Values)
         {
-            if (!world.Units.TryGetValue(id, out UnitData u))
-                continue;
-
-            u.Alive = false;
-            u.DesiredVelocity = Vector3.zero;
-
-            switch (u.Kind)
+            if (e is ICaughtable caughtable && caughtable.IsCaughted)
             {
-                case UnitKind.Animal:
-                    sink.Respawn(id);
-                    break;
+                caughtIds.Add(e.Data.Id);
             }
+        }
+
+        foreach (int id in caughtIds)
+        {
+            sink.Uncaught(id);
         }
     }
 }
@@ -226,17 +212,12 @@ public sealed class EndGameTimerSystem : ISystem
             return;
         }
 
-        foreach (UnitData u in world.Units.Values)
-        {            
-            if (u.Kind == UnitKind.Player)
-            {
-                world.Match.Timer += u.SumBonusTime;
-                u.SumBonusTime = 0;
-            }
-        }
+        if (world.Player == null) return;
+
+        world.Match.Timer += world.Player.SumBonusTime;
+        world.Player.SumBonusTime = 0;
 
         world.Match.Timer = Mathf.Max(0, world.Match.Timer - dt);
-        Debug.Log($"Осталось: {world.Match.Timer}");
     }
 }
 
@@ -251,7 +232,9 @@ public sealed class FreezeSystem : ISystem
 
     public void Run(float dt)
     {
-        foreach (UnitData u in world.Units.Values)
-            u.DesiredVelocity = Vector3.zero;
+        if (!world.Match.Over) return;
+
+        foreach (IEntity e in world.Entities.Values)
+            e.Data.DesiredVelocity = Vector3.zero;
     }
 }

@@ -5,10 +5,9 @@ public class UnitStats : ScriptableObject
 {
     [Header ("Speed")]
     public float maxSpeed;
-    public float moveSpeed = 5f;
-    public float acceleration = 20f;
-    public float turnSpeed = 60f;
-    public float interactionRadius = 0.7f;
+    public float moveSpeed;
+    public float acceleration;
+    public float turnSpeed;
 }
 
 [CreateAssetMenu(fileName = "Animal Stats", menuName = "UnitStats/Animals")]
@@ -24,4 +23,11 @@ public class AnimalStats : UnitStats
 
     [Header ("Tag")]
     public AnimalTag tag;
+}
+
+[CreateAssetMenu(fileName = "Player Stats", menuName = "UnitStats/Player")]
+public class PlayerStats : UnitStats
+{
+    [Header("Interact")]
+    public float interactionRadius = 0.7f;
 }

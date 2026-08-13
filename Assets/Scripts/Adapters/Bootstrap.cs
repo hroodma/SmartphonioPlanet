@@ -16,13 +16,14 @@ public sealed class Bootstrap : MonoBehaviour
     [SerializeField] private UnitBody playerBody;
 
     [Header("Stats (ScriptableObject)")]
-    [SerializeField] private UnitStats playerStats;
+    [SerializeField] private PlayerStats playerStats;
 
     private void Awake()
     {
         World world = new World();
         Bindings bindings = new Bindings();
         world.Match.Timer = startTimer;
+        world.Match.Over = false;
 
         factory.Init(world, bindings);
 
@@ -61,7 +62,7 @@ public sealed class Bootstrap : MonoBehaviour
             new PlanetGravitySystem(world),
             new InteractionSystem(world),
             new MovementSystem(world),
-            new AnimalMovementSystem(world, bindings),
+            new AnimalMovementSystem(world),
             new CaughtSystem(world, factory),
             write
         };

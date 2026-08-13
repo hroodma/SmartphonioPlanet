@@ -25,7 +25,7 @@ public interface IPlayerInput
 
 public interface IPlayerUI
 {
-    void UpdateUI(UnitData playerData, float timer);
+    void UpdateUI(PlayerData playerData, float timer);
 }
 
 public interface IUnitFactory
@@ -36,4 +36,5 @@ public interface IUnitFactory
 public interface IUnitSink
 {
     void Respawn(int id);
+    void Uncaught(int id);
 }

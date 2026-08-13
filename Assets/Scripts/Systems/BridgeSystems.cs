@@ -16,12 +16,12 @@ public sealed class PhysicsReadSystem : ISystem
     {
         foreach (KeyValuePair<int, IBody> kv in bindings.Bodies)
         {
-            if (!world.Units.TryGetValue(kv.Key, out UnitData u))
+            if (!world.Entities.TryGetValue(kv.Key, out IEntity e))
                 continue;
 
-            u.Position = kv.Value.Position;
-            u.Forward = kv.Value.Forward;
-            u.Right = kv.Value.Right;
+            e.Data.Position = kv.Value.Position;
+            e.Data.Forward = kv.Value.Forward;
+            e.Data.Right = kv.Value.Right;
         }
     }
 }
@@ -41,7 +41,7 @@ public sealed class PlayerCommandSystem : ISystem
     {
         if (world.Match.Over || bindings.PlayerInput == null)
             return;
-        if (!world.Units.TryGetValue(bindings.PlayerId, out UnitData player) || !player.Alive)
+        if (world.Player == null || !world.Player.Data.Alive)
             return;
 
         PlayerCommand cmd = bindings.PlayerInput.Read();
@@ -50,23 +50,23 @@ public sealed class PlayerCommandSystem : ISystem
         {
             // MoveInput: только W (1) или S (-1) или 0
             if (Mathf.Abs(cmd.MoveAxis.y) > 0.1f)
-                player.MoveInput = Mathf.Sign(cmd.MoveAxis.y);
+                world.Player.MoveInput = Mathf.Sign(cmd.MoveAxis.y);
             else
-                player.MoveInput = 0f;
+                world.Player.MoveInput = 0f;
 
             // TurnInput: только D (1) или A (-1) или 0
             if (Mathf.Abs(cmd.MoveAxis.x) > 0.1f)
-                player.TurnInput = Mathf.Sign(cmd.MoveAxis.x);
+                world.Player.TurnInput = Mathf.Sign(cmd.MoveAxis.x);
             else
-                player.TurnInput = 0f;
+                world.Player.TurnInput = 0f;
 
-            if (player.MoveInput < 0)
-                player.TurnInput *= -1;
+            if (world.Player.MoveInput < 0)
+                world.Player.TurnInput *= -1;
         }
         else
         {
-            player.MoveInput = 0f;
-            player.TurnInput = 0f;
+            world.Player.MoveInput = 0f;
+            world.Player.TurnInput = 0f;
         }
     }
 }
@@ -82,17 +82,17 @@ public sealed class PlanetGravitySystem : ISystem
 
     public void Run(float dt)
     {
-        foreach (UnitData u in world.Units.Values)
+        foreach (IEntity e in world.Entities.Values)
         {
-            if (!u.Alive) continue;
+            if (!e.Data.Alive) continue;
 
-            Vector3 toCenter = (world.Planet.Center - u.Position).normalized;
+            Vector3 toCenter = (world.Planet.Center - e.Data.Position).normalized;
 
-            u.UpDirection = -toCenter;
+            e.Data.UpDirection = -toCenter;
 
-            u.MoveDirection = Vector3.ProjectOnPlane(u.MoveDirection, u.UpDirection);
+            e.Data.MoveDirection = Vector3.ProjectOnPlane(e.Data.MoveDirection, e.Data.UpDirection);
 
-            u.VerticalVelocity = -u.UpDirection * world.Planet.GravityStrength * dt;
+            e.Data.VerticalVelocity = -e.Data.UpDirection * world.Planet.GravityStrength * dt;
         }
     }
 }
@@ -110,44 +110,40 @@ public sealed class InteractionSystem : ISystem
 
     public void Run(float dt)
     {
-        foreach (UnitData u in world.Units.Values)
-        {
-            if (!u.Alive) continue;
+        if (world.Player == null || !world.Player.Data.Alive) return;
 
-            if (u.Kind == UnitKind.Animal) continue;
-
-            int count = Physics.OverlapSphereNonAlloc(
-                u.Position,
-                u.InteractionRadius,
+        int count = Physics.OverlapSphereNonAlloc(
+                world.Player.Data.Position,
+                world.Player.InteractionRadius,
                 _buffer,
                 LayerMask.GetMask("Interactable")
             );
 
-            for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
+        {
+            if (_buffer[i].TryGetComponent<UnitRef>(out var otherRef))
             {
-                if (_buffer[i].TryGetComponent<UnitRef>(out var otherRef))
-                {
-                    if (otherRef.Id == u.Id) continue;
+                if (otherRef.Id == world.Player.Data.Id) continue;
 
-                    if (world.Units.TryGetValue(otherRef.Id, out UnitData other))
-                    {
-                        HandleInteraction(u, other);
-                    }
+                if (world.Entities.TryGetValue(otherRef.Id, out IEntity other) && other is IInteractable interactable)
+                {
+                    HandleInteraction(interactable);
                 }
             }
         }
     }
 
-    private void HandleInteraction(UnitData self, UnitData other)
+    private void HandleInteraction(IInteractable interactable)
     {
-        if (other.Kind == UnitKind.Animal && other.Alive)
+        if (!interactable.Data.Alive) return;
+
+        switch (interactable)
         {
-            self.CaughtAnimals++;
-            self.SumBonusTime += other.UnitBonusTime;
-            other.Alive = false;
-            Debug.Log($"пойманных зверей: {self.CaughtAnimals}");
-            Debug.Log($"Теперь бонусного времени: {self.SumBonusTime}");
-            
+            case IAnimal animal:
+                world.Player.CaughtAnimals++;
+                world.Player.SumBonusTime += animal.UnitBonusTime;
+                animal.IsCaughted = true;
+                break;
         }
     }
 }
@@ -165,10 +161,9 @@ public sealed class PlayerUISyncSystem : ISystem
 
     public void Run(float dt)
     {
-        if (!world.Units.TryGetValue(bindings.PlayerId, out UnitData playerData))
-            return;
+        if (world.Player == null) return;
 
-        bindings.PlayerUI.UpdateUI(playerData, world.Match.Timer);
+        bindings.PlayerUI.UpdateUI(world.Player, world.Match.Timer);
     }
 }
 
@@ -188,9 +183,9 @@ public sealed class ViewSyncSystem : ISystem
     {
         foreach (KeyValuePair<int, IUnitView> kv in bindings.Views)
         {
-            if (world.Units.TryGetValue(kv.Key, out UnitData u))
+            if (world.Entities.TryGetValue(kv.Key, out IEntity e))
             {
-                kv.Value.Render(u);
+                kv.Value.Render(e.Data);
             }
         }
     }
@@ -211,13 +206,13 @@ public sealed class SoundSyncSystem : ISystem
     {
         foreach (KeyValuePair<int, IUnitSound> kv in bindings.Sounds)
         {
-            if (!world.Units.TryGetValue(kv.Key, out UnitData u))
+            if (!world.Entities.TryGetValue(kv.Key, out IEntity e))
             {
                 continue;
             }
 
-            Vector3 horizontal = Vector3.ProjectOnPlane(u.DesiredVelocity, u.UpDirection);
-            float speed = horizontal.magnitude / u.MoveSpeed;
+            Vector3 horizontal = Vector3.ProjectOnPlane(e.Data.DesiredVelocity, e.Data.UpDirection);
+            float speed = horizontal.magnitude / e.Data.MoveSpeed;
 
             if (speed < 0.01f) speed = 0f;
 
@@ -242,10 +237,10 @@ public sealed class PhysicsWriteSystem : ISystem
     {
         foreach (KeyValuePair<int, IBody> kv in bindings.Bodies)
         {
-            if (!world.Units.TryGetValue(kv.Key, out UnitData u))
+            if (!world.Entities.TryGetValue(kv.Key, out IEntity e))
                 continue;
 
-            kv.Value.Apply(u.DesiredVelocity, u.UpDirection, u.Forward);
+            kv.Value.Apply(e.Data.DesiredVelocity, e.Data.UpDirection, e.Data.Forward);
         }
     }
 }
@@ -271,10 +266,8 @@ public sealed class MatchEndView : ISystem
 
         shown = true;
 
-        UnitData playerData;
-        if (world.Units.TryGetValue(bindings.PlayerId, out UnitData u))
-            playerData = u;
+        if (world.Player == null) return;
 
-        ui.ShowResult(u.CaughtAnimals);
+        ui.ShowResult(world.Player.CaughtAnimals);
     }
 }
